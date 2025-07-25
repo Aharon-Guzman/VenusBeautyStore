@@ -37,7 +37,7 @@ namespace VenusBeauty.DAL.Entities
         [MaxLength(15)]
         public string? Telefono { get; set; }
 
-        [Required]
+
         public string? UserId { get; set; }
         public IdentityUser? User { get; set; }
 
