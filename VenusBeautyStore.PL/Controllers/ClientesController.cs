@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VenusBeauty.DAL.Context;
@@ -11,7 +12,7 @@ namespace VenusBeautyStore.PL.Controllers
     {
         private readonly VenusBeautyContext _context;
 
-        public ClientesController(VenusBeautyContext context)
+        public ClientesController(VenusBeautyContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
         }
@@ -20,6 +21,11 @@ namespace VenusBeautyStore.PL.Controllers
         {
             var clientes = await _context.Clientes.ToListAsync();
             return View(clientes);
+        }
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
         }
     }
 }
