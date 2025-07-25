@@ -1,0 +1,29 @@
+﻿@model IEnumerable<VenusBeauty.DAL.Entities.Cliente>
+
+<h2>Lista de Clientes</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Primer Apellido</th>
+            <th>Segundo Apellido</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th>Activo</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cliente in Model)
+        {
+            <tr>
+                <td>@cliente.Nombre</td>
+                <td>@cliente.Apellido1</td>
+                <td>@cliente.Apellido2</td>
+                <td>@cliente.Correo</td>
+                <td>@cliente.Telefono</td>
+                <td>@(cliente.Activo ? "Sí" : "No")</td>
+            </tr>
+        }
+    </tbody>
+</table>
