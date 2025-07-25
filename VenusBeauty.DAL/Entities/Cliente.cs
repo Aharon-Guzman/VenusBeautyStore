@@ -39,9 +39,7 @@ namespace VenusBeauty.DAL.Entities
 
         [Required]
         public string? UserId { get; set; }
-
-        [NotMapped]
-        public IdentityUser? Usuario { get; set; }
+        public IdentityUser? User { get; set; }
 
         public bool Activo { get; set; } = true;
     }

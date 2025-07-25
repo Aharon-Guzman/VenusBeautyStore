@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VenusBeauty.DAL.Context;
+using VenusBeautyStore.PL.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Cadena de conexiÛn
+// Cadena de conexi√≥n
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -12,14 +13,16 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<VenusBeautyContext>(options =>
     options.UseSqlServer(connectionString));
 
-// Configurar Identity con confirmaciÛn de cuenta desactivada
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<VenusBeautyContext>();
+
+// Configurar Identity con confirmaci√≥n de cuenta desactivada
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
 })
 .AddEntityFrameworkStores<VenusBeautyContext>();
 
-// Activar soporte para p·ginas Razor personalizadas (como /Areas/Identity/Pages/Account/Register.cshtml)
+// Activar soporte para p√°ginas Razor personalizadas (como /Areas/Identity/Pages/Account/Register.cshtml)
 builder.Services.AddRazorPages();
 
 // Mostrar errores en desarrollo
@@ -33,6 +36,12 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await SeedData.Initialize(services); // ‚úÖ Llamamos al m√©todo Initialize
+}
 
 // Configurar pipeline HTTP
 if (app.Environment.IsDevelopment())
@@ -49,7 +58,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication(); // << °No te puede faltar!
+app.UseAuthentication(); // << ¬°No te puede faltar!
 app.UseAuthorization();
 
 // Rutas

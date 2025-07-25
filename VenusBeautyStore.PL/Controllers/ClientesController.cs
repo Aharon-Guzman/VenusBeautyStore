@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VenusBeauty.DAL.Context;
 
 
 namespace VenusBeautyStore.PL.Controllers
 {
+    [Authorize (Roles ="Admin,Recepcionista")]
     public class ClientesController : Controller
     {
         private readonly VenusBeautyContext _context;

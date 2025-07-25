@@ -21,5 +21,17 @@ namespace VenusBeauty.DAL.Context
         public DbSet<Cita> Citas { get; set; }
         public DbSet<DetalleCita> DetalleCitas { get; set; }
         public DbSet<ReservaProducto> ReservaProductos { get; set; }
+        public DbSet<Producto> Productos { get; set; }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<Cliente>()
+                .HasOne(c => c.User)
+                .WithOne()
+                .HasForeignKey<Cliente>(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
+   
 }
