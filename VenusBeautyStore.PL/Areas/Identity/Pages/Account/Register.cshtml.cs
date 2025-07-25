@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
@@ -34,18 +34,35 @@ namespace VenusBeautyStore.PL.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [Display(Name = "Nombre")]
+            public string Nombre { get; set; } = string.Empty;
+
+            [Required]
+            [Display(Name = "Primer apellido")]
+            public string Apellido1 { get; set; } = string.Empty;
+
+            [Required]
+            [Display(Name = "Segundo apellido")]
+            public string Apellido2 { get; set; } = string.Empty;
+
+            [Required]
+            [Phone]
+            [Display(Name = "Teléfono")]
+            public string Telefono { get; set; } = string.Empty;
+
+            [Required]
             [EmailAddress]
-            [Display(Name = "Correo electr�nico")]
+            [Display(Name = "Correo electrónico")]
             public string Email { get; set; } = string.Empty;
 
             [Required]
             [DataType(DataType.Password)]
-            [Display(Name = "Contrase�a")]
+            [Display(Name = "Contraseña")]
             public string Password { get; set; } = string.Empty;
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirmar contrase�a")]
-            [Compare("Password", ErrorMessage = "Las contrase�as no coinciden.")]
+            [Display(Name = "Confirmar contraseña")]
+            [Compare("Password", ErrorMessage = "Las contraseñas no coinciden.")]
             public string ConfirmPassword { get; set; } = string.Empty;
         }
 
@@ -65,28 +82,29 @@ namespace VenusBeautyStore.PL.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("? Usuario Identity creado con ID: {Id}", user.Id);
+                    _logger.LogInformation("✅ Usuario Identity creado con ID: {Id}", user.Id);
 
                     try
                     {
                         var cliente = new Cliente
                         {
-                            Nombre = "NombrePorDefecto",
-                            Apellido1 = "Apellido1",
-                            Apellido2 = "Apellido2",
+                            Nombre = Input.Nombre,
+                            Apellido1 = Input.Apellido1,
+                            Apellido2 = Input.Apellido2,
                             Correo = Input.Email,
-                            Telefono = "0000-0000",
+                            Telefono = Input.Telefono,
                             UserId = user.Id,
                             Activo = true
                         };
 
                         _context.Clientes.Add(cliente);
                         await _context.SaveChangesAsync();
-                        _logger.LogInformation("? Cliente guardado con Id {IdCliente}", cliente.IdCliente);
+
+                        _logger.LogInformation("✅ Cliente guardado con Id {IdCliente}", cliente.IdCliente);
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, "? Error al insertar Cliente");
+                        _logger.LogError(ex, "❌ Error al insertar Cliente");
                     }
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
