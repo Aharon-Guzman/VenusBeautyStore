@@ -339,5 +339,23 @@ namespace VenusBeautyStore.PL.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleActivo([FromForm] int id)
+        {
+            var cliente = await _clienteRepository.GetByIdAsync(id);
+            if (cliente == null)
+                return NotFound();
+
+            cliente.Activo = !cliente.Activo;
+
+            await _clienteRepository.UpdateAsync(cliente);
+            await _clienteRepository.SaveChangesAsync();
+
+            return Ok(new { success = true, activo = cliente.Activo });
+        }
+
+
     }
 }

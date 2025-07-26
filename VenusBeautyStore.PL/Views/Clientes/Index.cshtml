@@ -2,6 +2,11 @@
 
 <h2>Lista de Clientes</h2>
 
+<!-- ✅ Token antifalsificación para las peticiones AJAX -->
+<form id="antiForgeryForm" method="post">
+    @Html.AntiForgeryToken()
+</form>
+
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -11,6 +16,7 @@
             <th>Correo</th>
             <th>Teléfono</th>
             <th>Activo</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -22,7 +28,16 @@
                 <td>@cliente.Apellido2</td>
                 <td>@cliente.Correo</td>
                 <td>@cliente.Telefono</td>
-                <td>@(cliente.Activo ? "Sí" : "No")</td>
+
+                <!-- ✅ Checkbox para activar/desactivar -->
+                <td>
+                    <div class="form-check form-switch">
+                        <input type="checkbox" class="form-check-input toggle-activo"
+                               data-id="@cliente.IdCliente"
+                               @(cliente.Activo ? "checked" : "") />
+                    </div>
+                </td>
+
                 <td>
                     <a asp-action="Edit" asp-route-id="@cliente.IdCliente" class="btn btn-sm btn-warning">Editar</a>
                     <a asp-action="Delete" asp-route-id="@cliente.IdCliente" class="btn btn-sm btn-danger">Eliminar</a>
@@ -31,8 +46,12 @@
         }
     </tbody>
 </table>
+
 <div class="mb-3">
     <a class="btn btn-primary" asp-controller="Clientes" asp-action="Create">Nuevo Cliente</a>
 </div>
 
+@section Scripts {
+    <script src="~/js/clientes/clientes.js"></script>
+}
 
