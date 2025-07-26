@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VenusBeauty.DAL.Context;
+using VenusBeauty.DAL.Repositories;
 using VenusBeautyStore.PL.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 // Inyectar el contexto de base de datos principal (que contiene Identity + tus tablas)
 builder.Services.AddDbContext<VenusBeautyContext>(options =>
     options.UseSqlServer(connectionString));
+
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 
 //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<VenusBeautyContext>();
 

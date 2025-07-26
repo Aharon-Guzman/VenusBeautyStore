@@ -23,6 +23,10 @@
                 <td>@cliente.Correo</td>
                 <td>@cliente.Telefono</td>
                 <td>@(cliente.Activo ? "Sí" : "No")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@cliente.IdCliente" class="btn btn-sm btn-warning">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@cliente.IdCliente" class="btn btn-sm btn-danger">Eliminar</a>
+                </td>
             </tr>
         }
     </tbody>
@@ -30,3 +34,5 @@
 <div class="mb-3">
     <a class="btn btn-primary" asp-controller="Clientes" asp-action="Create">Nuevo Cliente</a>
 </div>
+
+
