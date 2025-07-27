@@ -248,6 +248,9 @@ namespace VenusBeautyStore.PL.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Cliente cliente)
         {
+            if (id != cliente.IdCliente)
+                return BadRequest();
+
             if (!ModelState.IsValid)
                 return View(cliente);
 
