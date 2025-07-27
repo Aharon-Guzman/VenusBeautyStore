@@ -79,6 +79,8 @@ using VenusBeauty.DAL.Context;
 using VenusBeauty.DAL.Repositories;
 using VenusBeauty.BLL.Services;
 using VenusBeautyStore.PL.Data;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -105,7 +107,6 @@ builder.Services.AddScoped<IProductoService, ProductoService>();
 builder.Services.AddScoped<IServicioRepository, ServicioRepository>();
 builder.Services.AddScoped<IServicioService, ServicioService>();
 
-
 // ✅ Razor Pages e MVC
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
@@ -115,6 +116,18 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 var app = builder.Build();
+
+// ✅ Configuración de cultura (para usar coma como decimal)
+var cultureInfo = new CultureInfo("es-CR");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(cultureInfo),
+    SupportedCultures = new List<CultureInfo> { cultureInfo },
+    SupportedUICultures = new List<CultureInfo> { cultureInfo }
+});
 
 // ✅ Semilla de datos iniciales (roles/usuarios)
 using (var scope = app.Services.CreateScope())
