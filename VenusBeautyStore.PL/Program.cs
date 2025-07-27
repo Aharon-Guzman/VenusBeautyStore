@@ -100,6 +100,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 // ✅ Registrar Repositories y Services
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+builder.Services.AddScoped<IProductoService, ProductoService>();
 
 // ✅ Razor Pages e MVC
 builder.Services.AddRazorPages();

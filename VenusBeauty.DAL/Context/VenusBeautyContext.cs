@@ -12,16 +12,16 @@ namespace VenusBeauty.DAL.Context
 {
     public class VenusBeautyContext : IdentityDbContext<IdentityUser>
     {
-        public VenusBeautyContext(DbContextOptions<VenusBeautyContext> options) : base(options) 
-        { 
-           
+        public VenusBeautyContext(DbContextOptions<VenusBeautyContext> options) : base(options)
+        {
+
         }
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Servicio> Servicios { get; set; }
         public DbSet<Cita> Citas { get; set; }
         public DbSet<DetalleCita> DetalleCitas { get; set; }
-        public DbSet<ReservaProducto> ReservaProductos { get; set; }
-        public DbSet<Producto> Productos { get; set; }
+        public DbSet<ReservaProducto> ReservaProducto { get; set; }
+        public DbSet<Producto> Producto { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -33,5 +33,38 @@ namespace VenusBeauty.DAL.Context
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
-   
+
 }
+
+
+
+
+
+//using Microsoft.AspNetCore.Identity;
+//using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+//using Microsoft.EntityFrameworkCore;
+//using VenusBeauty.DAL.Entities;
+
+//public class VenusBeautyContext : IdentityDbContext<IdentityUser>
+//{
+//    public VenusBeautyContext(DbContextOptions<VenusBeautyContext> options) : base(options) { }
+
+//    public DbSet<Cliente> Clientes { get; set; }
+//    public DbSet<Servicio> Servicios { get; set; }
+//    public DbSet<Cita> Citas { get; set; }
+//    public DbSet<DetalleCita> DetalleCitas { get; set; }
+//    public DbSet<ReservaProducto> ReservaProductos { get; set; }
+
+//    public DbSet<Producto> Producto { get; set; } // ✅ Cambiado
+
+//    protected override void OnModelCreating(ModelBuilder builder)
+//    {
+//        base.OnModelCreating(builder);
+
+//        builder.Entity<Cliente>()
+//            .HasOne(c => c.User)
+//            .WithOne()
+//            .HasForeignKey<Cliente>(c => c.UserId)
+//            .OnDelete(DeleteBehavior.Cascade);
+//    }
+//}

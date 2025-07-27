@@ -1,0 +1,53 @@
+﻿@model IEnumerable<VenusBeauty.DAL.Entities.Producto>
+
+<h2>Lista de Productos</h2>
+
+<!-- ✅ Token antifalsificación -->
+<form id="antiForgeryForm" method="post">
+    @Html.AntiForgeryToken()
+</form>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Activo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var producto in Model)
+        {
+            <tr>
+                <td>@producto.Nombre</td>
+                <td>@producto.Descripcion</td>
+                <td>@producto.Precio.ToString("C")</td>
+                <td>@producto.Stock</td>
+
+                <td>
+                    <div class="form-check form-switch">
+                        <input type="checkbox" class="form-check-input toggle-activo-producto"
+                               data-id="@producto.IdProducto"
+                               @(producto.Activo ? "checked" : "") />
+                    </div>
+                </td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@producto.IdProducto" class="btn btn-sm btn-warning">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@producto.IdProducto" class="btn btn-sm btn-danger">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="mb-3">
+    <a class="btn btn-primary" asp-controller="Productos" asp-action="Create">Nuevo Producto</a>
+</div>
+
+@section Scripts {
+    <script src="~/js/productos/productos.js"></script>
+}
