@@ -35,7 +35,7 @@ namespace VenusBeauty.DAL.Repositories
 
         public async Task DeleteAsync(Cliente cliente)
         {
-            _context.Clientes.Remove(cliente);
+            _context.Entry(cliente).State = EntityState.Deleted;   
         }
 
         public async Task SaveChangesAsync()
