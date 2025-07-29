@@ -15,5 +15,16 @@ namespace VenusBeauty.BLL.Services
         );
 
         Task<IEnumerable<UsuarioInternoDto>> ObtenerUsuariosInternosAsync();
+        Task<UsuarioInternoDto> ObtenerPorIdAsync(string userId);
+
+        Task<bool> EditarUsuarioInternoAsync(
+            string userId,
+            string email,
+            string rol,
+            string nombre,
+            string apellido,
+            string telefono);
+
+        Task<bool> EliminarUsuarioInternoAsync(string userId);
     }
 }

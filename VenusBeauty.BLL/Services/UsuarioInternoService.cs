@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using VenusBeauty.DAL.Context;
-using VenusBeauty.DAL.Entities; // si tu entidad Trabajadores aún no existe, la agregaremos después
 using Microsoft.EntityFrameworkCore;
 
 namespace VenusBeauty.BLL.Services
@@ -25,7 +24,13 @@ namespace VenusBeauty.BLL.Services
             _context = context;
         }
 
-        public async Task<bool> CrearUsuarioInternoAsync(string email, string password, string rol, string nombre, string apellido, string telefono)
+        public async Task<bool> CrearUsuarioInternoAsync(
+            string email,
+            string password,
+            string rol,
+            string nombre,
+            string apellido,
+            string telefono)
         {
             var usuario = new IdentityUser
             {
@@ -44,7 +49,6 @@ namespace VenusBeauty.BLL.Services
 
             await _userManager.AddToRoleAsync(usuario, rol);
 
-            // Insertar en Trabajadores
             await _context.Database.ExecuteSqlRawAsync(@"
                 insert into Trabajadores (UserId, Nombre, Apellido, Telefono, Rol)
                 values ({0}, {1}, {2}, {3}, {4})",
@@ -76,6 +80,76 @@ namespace VenusBeauty.BLL.Services
             }
 
             return lista;
+        }
+
+        public async Task<UsuarioInternoDto> ObtenerPorIdAsync(string userId)
+        {
+            var usuario = await _userManager.FindByIdAsync(userId);
+            if (usuario == null) return null;
+
+            var trabajador = await _context.Trabajadores
+                .Where(t => t.UserId == userId)
+                .FirstOrDefaultAsync();
+
+            if (trabajador == null) return null;
+
+            var roles = await _userManager.GetRolesAsync(usuario);
+
+            return new UsuarioInternoDto
+            {
+                Email = usuario.Email,
+                Rol = roles.FirstOrDefault() ?? ""
+            };
+        }
+
+        public async Task<bool> EditarUsuarioInternoAsync(
+            string userId,
+            string email,
+            string rol,
+            string nombre,
+            string apellido,
+            string telefono)
+        {
+            var usuario = await _userManager.FindByIdAsync(userId);
+            if (usuario == null) return false;
+
+            usuario.Email = email;
+            usuario.UserName = email;
+            var resultado = await _userManager.UpdateAsync(usuario);
+            if (!resultado.Succeeded) return false;
+
+            var rolesActuales = await _userManager.GetRolesAsync(usuario);
+            await _userManager.RemoveFromRolesAsync(usuario, rolesActuales);
+            await _userManager.AddToRoleAsync(usuario, rol);
+
+            var trabajador = await _context.Trabajadores.FirstOrDefaultAsync(t => t.UserId == userId);
+            if (trabajador != null)
+            {
+                trabajador.Nombre = nombre;
+                trabajador.Apellido = apellido;
+                trabajador.Telefono = telefono;
+                trabajador.Rol = rol;
+                _context.Trabajadores.Update(trabajador);
+                await _context.SaveChangesAsync();
+            }
+
+            return true;
+        }
+
+        public async Task<bool> EliminarUsuarioInternoAsync(string userId)
+        {
+            var usuario = await _userManager.FindByIdAsync(userId);
+            if (usuario == null) return false;
+
+            var trabajador = await _context.Trabajadores.FirstOrDefaultAsync(t => t.UserId == userId);
+            if (trabajador != null)
+            {
+                _context.Trabajadores.Remove(trabajador);
+                await _context.SaveChangesAsync();
+            }
+
+            var resultado = await _userManager.DeleteAsync(usuario);
+            return resultado.Succeeded;
         }
     }
 }

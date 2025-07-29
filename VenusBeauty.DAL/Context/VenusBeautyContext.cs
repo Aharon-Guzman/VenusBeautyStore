@@ -22,6 +22,7 @@ namespace VenusBeauty.DAL.Context
         public DbSet<DetalleCita> DetalleCitas { get; set; }
         public DbSet<ReservaProducto> ReservaProducto { get; set; }
         public DbSet<Producto> Producto { get; set; }
+        public DbSet<Trabajador> Trabajadores { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
