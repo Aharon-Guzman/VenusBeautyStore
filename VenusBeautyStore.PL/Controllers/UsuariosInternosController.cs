@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using VenusBeauty.BLL.Services;
-using VenusBeautyStore.PL.Models;
 using VenusBeautyStore.PL.Models.ViewModels;
 
 namespace VenusBeautyStore.PL.Controllers
@@ -17,14 +15,30 @@ namespace VenusBeautyStore.PL.Controllers
         {
             _usuarioInternoService = usuarioInternoService;
         }
+
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var usuarios = await _usuarioInternoService.ObtenerUsuariosInternosAsync();
+            return View(usuarios);
         }
+
         [HttpGet]
         public IActionResult Create()
         {
+            var roles = new List<string>();
+
+            if (User.IsInRole("Admin"))
+            {
+                roles.AddRange(new[] { "Admin", "Recepcionista", "Estilista" });
+            }
+            else if (User.IsInRole("Recepcionista"))
+            {
+                roles.AddRange(new[] { "Recepcionista", "Estilista" });
+            }
+
+            ViewBag.Roles = roles;
+
             return View();
         }
 
@@ -38,7 +52,10 @@ namespace VenusBeautyStore.PL.Controllers
             var resultado = await _usuarioInternoService.CrearUsuarioInternoAsync(
                 model.Email,
                 model.Password,
-                model.Rol
+                model.Rol,
+                model.Nombre,
+                model.Apellido,
+                model.Telefono
             );
 
             if (!resultado)
@@ -47,7 +64,7 @@ namespace VenusBeautyStore.PL.Controllers
                 return View(model);
             }
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(Index));
         }
     }
 }
