@@ -32,6 +32,12 @@ namespace VenusBeauty.DAL.Context
                 .WithOne()
                 .HasForeignKey<Cliente>(c => c.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Trabajador>()
+      .HasOne(t => t.User)
+      .WithOne()
+      .HasForeignKey<Trabajador>(t => t.UserId)
+      .OnDelete(DeleteBehavior.Cascade);
         }
     }
 

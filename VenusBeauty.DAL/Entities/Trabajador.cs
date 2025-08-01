@@ -41,9 +41,9 @@ namespace VenusBeauty.DAL.Entities
         [Key]
         public int IdTrabajador { get; set; }
 
-        [Required]
+        // 🔹 No debe ser obligatorio porque se asigna en el servicio
         [MaxLength(450)]
-        public string UserId { get; set; } = string.Empty;
+        public string? UserId { get; set; }
 
         [Required]
         [MaxLength(100)]
@@ -53,15 +53,16 @@ namespace VenusBeauty.DAL.Entities
         [MaxLength(100)]
         public string Apellido { get; set; } = string.Empty;
 
+        [Required]
         [MaxLength(50)]
-        public string? Telefono { get; set; }
+        public string Telefono { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(50)]
         public string Rol { get; set; } = string.Empty;
 
-        // 🔹 Relación con Identity
+        // 🔹 Relación con Identity → Opcional
         [ForeignKey("UserId")]
-        public ApplicationUser User { get; set; }
+        public ApplicationUser? User { get; set; }
     }
 }

@@ -2,6 +2,9 @@
 
 <h2>Nuevo Usuario Interno</h2>
 
+<!-- 🔹 Esto mostrará los errores de Identity -->
+<div asp-validation-summary="All" class="text-danger"></div>
+
 <form asp-action="Create" method="post">
     <div class="mb-3">
         <label asp-for="Nombre" class="form-label"></label>

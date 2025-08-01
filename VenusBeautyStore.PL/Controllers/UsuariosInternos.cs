@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using VenusBeauty.BLL.Services;
 using VenusBeauty.DAL.Entities;
@@ -9,10 +10,12 @@ namespace VenusBeautyStore.PL.Controllers
     public class UsuariosInternos : Controller
     {
         private readonly ITrabajadorService _trabajadorService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public UsuariosInternos(ITrabajadorService trabajadorService)
+        public UsuariosInternos(ITrabajadorService trabajadorService, UserManager<ApplicationUser> userManager)
         {
             _trabajadorService = trabajadorService;
+            _userManager = userManager;
         }
 
         // ✅ Listar todos los trabajadores
@@ -26,41 +29,31 @@ namespace VenusBeautyStore.PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            List<string> rolesDisponibles = new();
-
-            if (User.IsInRole("Admin"))
-            {
-                rolesDisponibles.AddRange(new[] { "Admin", "Recepcionista", "Estilista" });
-            }
-            else if (User.IsInRole("Recepcionista"))
-            {
-                rolesDisponibles.Add("Estilista");
-            }
-
-            ViewBag.RolesDisponibles = rolesDisponibles;
+            ViewBag.RolesDisponibles = ObtenerRolesDisponibles();
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Trabajador trabajador, string Password)
+        public async Task<IActionResult> Create(Trabajador trabajador, string Password, string Email)
         {
-            // 🔹 Volvemos a cargar los roles disponibles SIEMPRE
-            List<string> rolesDisponibles = new();
-            if (User.IsInRole("Admin"))
-                rolesDisponibles.AddRange(new[] { "Admin", "Recepcionista", "Estilista" });
-            else if (User.IsInRole("Recepcionista"))
-                rolesDisponibles.Add("Estilista");
-
-            ViewBag.RolesDisponibles = rolesDisponibles;
+            ViewBag.RolesDisponibles = ObtenerRolesDisponibles();
 
             if (!ModelState.IsValid)
                 return View(trabajador);
 
-            var creado = await _trabajadorService.CrearTrabajadorAsync(trabajador, Password, trabajador.Rol);
+            var (creado, errores) = await _trabajadorService.CrearTrabajadorAsync(
+                trabajador,
+                Password,
+                trabajador.Rol,
+                Email
+            );
+
             if (!creado)
             {
-                ModelState.AddModelError("", "❌ Error al crear el usuario interno.");
+                foreach (var error in errores)
+                    ModelState.AddModelError("", error);
+
                 return View(trabajador);
             }
 
@@ -85,40 +78,27 @@ namespace VenusBeautyStore.PL.Controllers
             if (!ModelState.IsValid)
                 return View(trabajador);
 
-            // 🔹 Verificamos si el trabajador existe
             var trabajadorDb = await _trabajadorService.ObtenerPorIdAsync(id);
             if (trabajadorDb == null)
                 return NotFound();
 
-            // 🔹 Si el usuario logueado es Recepcionista → bloquear cambio de Rol
             if (User.IsInRole("Recepcionista"))
-            {
-                trabajador.Rol = trabajadorDb.Rol; // Mantener el rol original
-            }
+                trabajador.Rol = trabajadorDb.Rol;
 
-            // 🔹 Actualizamos datos básicos
             trabajadorDb.Nombre = trabajador.Nombre;
             trabajadorDb.Apellido = trabajador.Apellido;
             trabajadorDb.Telefono = trabajador.Telefono;
 
-            // 🔹 Si el usuario actual es Admin, puede cambiar el Rol
             if (User.IsInRole("Admin"))
-            {
                 trabajadorDb.Rol = trabajador.Rol;
-            }
 
-            // 🔹 Guardamos cambios del trabajador
             var actualizado = await _trabajadorService.EditarTrabajadorAsync(id, trabajadorDb);
 
-            // 🔹 Si es Admin y envió una nueva contraseña
             if (actualizado && User.IsInRole("Admin") && !string.IsNullOrWhiteSpace(NewPassword))
-            {
                 await _trabajadorService.CambiarPasswordAsync(trabajadorDb.UserId, NewPassword);
-            }
 
             return RedirectToAction(nameof(Index));
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
@@ -129,6 +109,7 @@ namespace VenusBeautyStore.PL.Controllers
 
             return View(trabajador);
         }
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -137,5 +118,16 @@ namespace VenusBeautyStore.PL.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // 🔹 Método privado para no repetir código
+        private List<string> ObtenerRolesDisponibles()
+        {
+            if (User.IsInRole("Admin"))
+                return new List<string> { "Admin", "Recepcionista", "Estilista" };
+
+            if (User.IsInRole("Recepcionista"))
+                return new List<string> { "Estilista" };
+
+            return new List<string>();
+        }
     }
 }
