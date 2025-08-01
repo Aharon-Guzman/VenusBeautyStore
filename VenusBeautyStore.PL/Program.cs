@@ -106,7 +106,6 @@ builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
 builder.Services.AddScoped<IProductoService, ProductoService>();
 builder.Services.AddScoped<IServicioRepository, ServicioRepository>();
 builder.Services.AddScoped<IServicioService, ServicioService>();
-builder.Services.AddScoped<IUsuarioInternoService, UsuarioInternoService>();
 
 
 // ✅ Razor Pages e MVC
