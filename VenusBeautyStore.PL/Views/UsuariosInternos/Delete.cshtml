@@ -1,0 +1,20 @@
+﻿@model VenusBeauty.DAL.Entities.Trabajador
+
+<h2>Eliminar Usuario Interno</h2>
+
+<div class="alert alert-danger">
+    ¿Estás seguro de que deseas eliminar este usuario interno?
+</div>
+
+<div>
+    <h4>@Model.Nombre @Model.Apellido</h4>
+    <p><strong>Teléfono:</strong> @Model.Telefono</p>
+    <p><strong>Rol:</strong> @Model.Rol</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="IdTrabajador" />
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
