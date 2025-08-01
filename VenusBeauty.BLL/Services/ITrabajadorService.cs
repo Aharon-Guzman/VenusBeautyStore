@@ -23,5 +23,7 @@ namespace VenusBeauty.BLL.Services
         Task<bool> EditarTrabajadorAsync(int id, Trabajador trabajador);
         Task<bool> EliminarTrabajadorAsync(int id);
         Task<bool> CambiarPasswordAsync(string userId, string newPassword);
+        Task<(bool Succeeded, IEnumerable<string> Errors)> CrearTrabajadorConErroresAsync(Trabajador trabajador, string password, string rol, string email);
+
     }
 }

@@ -1,4 +1,4 @@
-﻿@model VenusBeauty.DAL.Entities.Trabajador
+﻿@* @model VenusBeauty.DAL.Entities.Trabajador
 
 <h2>Editar Usuario Interno</h2>
 
@@ -23,26 +23,107 @@
         <span asp-validation-for="Telefono" class="text-danger"></span>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Rol</label>
-        <select asp-for="Rol" class="form-select" required>
-            @if (User.IsInRole("Admin"))
-            {
-                <option value="Admin" selected="@(Model.Rol == "Admin")">Administrador</option>
-                <option value="Recepcionista" selected="@(Model.Rol == "Recepcionista")">Recepcionista</option>
-                <option value="Estilista" selected="@(Model.Rol == "Estilista")">Estilista</option>
-            }
-            else if (User.IsInRole("Recepcionista"))
-            {
-                <option value="Estilista" selected="@(Model.Rol == "Estilista")">Estilista</option>
-            }
-        </select>
-    </div>
 
     @if (User.IsInRole("Admin"))
     {
         <div class="mb-3">
+            <label class="form-label">Correo</label>
+            <input type="email" name="Correo" value="@Model.User?.Email" class="form-control" required />
+        </div>
+    }
+
+
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="mb-3">
+            <label class="form-label">Rol</label>
+            <select asp-for="Rol" class="form-select" required>
+
+                <option value="Admin" selected="@(Model.Rol == "Admin")">Administrador</option>
+                <option value="Recepcionista" selected="@(Model.Rol == "Recepcionista")">Recepcionista</option>
+                <option value="Estilista" selected="@(Model.Rol == "Estilista")">Estilista</option>
+            </select>
+        </div>
+    }
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="mb-3">
             <label class="form-label">Nueva Contraseña</label>
+            <input type="password" name="NewPassword" class="form-control" />
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+ *@
+@model VenusBeauty.DAL.Entities.Trabajador
+
+<h2>Editar Usuario Interno</h2>
+
+<!-- 🔹 Muestra todos los errores -->
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="IdTrabajador" />
+    <input type="hidden" asp-for="UserId" />
+
+    <div class="mb-3">
+        <label asp-for="Nombre" class="form-label"></label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Apellido" class="form-label"></label>
+        <input asp-for="Apellido" class="form-control" />
+        <span asp-validation-for="Apellido" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Telefono" class="form-label"></label>
+        <input asp-for="Telefono" class="form-control" />
+        <span asp-validation-for="Telefono" class="text-danger"></span>
+    </div>
+
+    <!-- ✅ Mostrar el correo actual -->
+    <div class="mb-3">
+        <label class="form-label">Correo</label>
+        <input type="email" name="Email" class="form-control"
+               value="@Model.User?.Email"
+               @(User.IsInRole("Recepcionista") ? "readonly" : "") />
+    </div>
+
+    <!-- ✅ Mostrar el rol solo si es Admin -->
+    <div class="mb-3">
+        <label class="form-label">Rol</label>
+        @if (User.IsInRole("Admin"))
+        {
+            <select asp-for="Rol" class="form-select">
+                @foreach (var rol in ViewBag.RolesDisponibles as List<string>)
+                {
+                    <option value="@rol" selected="@(rol == Model.Rol)">
+                        @rol
+                    </option>
+                }
+            </select>
+        }
+        else
+        {
+            <input asp-for="Rol" class="form-control" readonly />
+        }
+        <span asp-validation-for="Rol" class="text-danger"></span>
+    </div>
+
+    <!-- ✅ Campo de nueva contraseña (solo para Admin) -->
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="mb-3">
+            <label class="form-label">Nueva Contraseña (opcional)</label>
             <input type="password" name="NewPassword" class="form-control" />
         </div>
     }
