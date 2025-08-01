@@ -10,7 +10,7 @@ using VenusBeauty.DAL.Entities;
 
 namespace VenusBeauty.DAL.Context
 {
-    public class VenusBeautyContext : IdentityDbContext<IdentityUser>
+    public class VenusBeautyContext : IdentityDbContext<ApplicationUser>
     {
         public VenusBeautyContext(DbContextOptions<VenusBeautyContext> options) : base(options)
         {

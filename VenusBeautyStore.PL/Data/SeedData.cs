@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
+using VenusBeauty.DAL.Entities;
 
 namespace VenusBeautyStore.PL.Data
 {
@@ -11,7 +12,7 @@ namespace VenusBeautyStore.PL.Data
         {
             // 1️⃣ Obtenemos RoleManager y UserManager desde los servicios
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
             // 2️⃣ Definimos los roles base
             string[] roles = { "Admin", "Recepcionista", "Estilista" };
@@ -33,11 +34,14 @@ namespace VenusBeautyStore.PL.Data
 
             if (adminUser == null)
             {
-                var newAdmin = new IdentityUser
+                var newAdmin = new ApplicationUser
                 {
                     UserName = adminEmail,
                     Email = adminEmail,
-                    EmailConfirmed = true // ✅ Confirmado desde el inicio
+                    EmailConfirmed = true, // ✅ Confirmado desde el inicio
+                    Nombres = "Administrador",
+                    Apellidos = "Principal",
+                    DisplayName = "Administrador",
                 };
 
                 var result = await userManager.CreateAsync(newAdmin, adminPassword);

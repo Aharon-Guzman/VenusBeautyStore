@@ -13,7 +13,7 @@ namespace VenusBeauty.DAL.Entities
         public string UserId { get; set; }
 
         [ForeignKey("UserId")]
-        public IdentityUser Usuario { get; set; } // ✅ Navegación hacia Identity
+        public ApplicationUser Usuario { get; set; } // ✅ Navegación hacia Identity
 
         [Required]
         [MaxLength(100)]

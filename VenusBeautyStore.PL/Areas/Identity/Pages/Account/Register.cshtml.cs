@@ -9,14 +9,14 @@ namespace VenusBeautyStore.PL.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly VenusBeautyContext _context;
         private readonly ILogger<RegisterModel> _logger;
 
         public RegisterModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             VenusBeautyContext context,
             ILogger<RegisterModel> logger)
         {
@@ -77,7 +77,15 @@ namespace VenusBeautyStore.PL.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser
+                {
+                    UserName = Input.Email,
+                    Email = Input.Email,
+                    EmailConfirmed = true,
+                    Nombres = Input.Nombre,
+                    Apellidos = $"{Input.Apellido1} {Input.Apellido2}",
+                    DisplayName = $"{Input.Nombre} {Input.Apellido1}",
+                    FotoUrl = ""  };
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)

@@ -7,9 +7,9 @@ namespace VenusBeauty.BLL.Services
     public class ClienteService : IClienteService
     {
         private readonly IClienteRepository _clienteRepository;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ClienteService(IClienteRepository clienteRepository, UserManager<IdentityUser> userManager)
+        public ClienteService(IClienteRepository clienteRepository, UserManager<ApplicationUser> userManager)
         {
             _clienteRepository = clienteRepository;
             _userManager = userManager;
@@ -28,13 +28,38 @@ namespace VenusBeauty.BLL.Services
         }
 
         // ✅ Crear cliente + usuario Identity
+        //public async Task<bool> CrearClienteAsync(Cliente cliente, string password)
+        //{
+        //    var user = new ApplicationUser
+        //    {
+        //        UserName = cliente.Correo,
+        //        Email = cliente.Correo,
+        //        EmailConfirmed = true
+        //    };
+
+        //    var result = await _userManager.CreateAsync(user, password);
+        //    if (!result.Succeeded)
+        //        return false;
+
+        //    cliente.UserId = user.Id;
+        //    cliente.Activo = true;
+
+        //    await _clienteRepository.AddAsync(cliente);
+        //    await _clienteRepository.SaveChangesAsync();
+
+        //    return true;
+        //}
         public async Task<bool> CrearClienteAsync(Cliente cliente, string password)
         {
-            var user = new IdentityUser
+            var user = new ApplicationUser
             {
                 UserName = cliente.Correo,
                 Email = cliente.Correo,
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                Nombres = cliente.Nombre,
+                Apellidos = $"{cliente.Apellido1} {cliente.Apellido2}",
+                DisplayName = $"{cliente.Nombre} {cliente.Apellido1}",
+                FotoUrl = "" // Puedes dejarlo vacío por ahora
             };
 
             var result = await _userManager.CreateAsync(user, password);
@@ -49,6 +74,7 @@ namespace VenusBeauty.BLL.Services
 
             return true;
         }
+
 
         // ✅ Editar cliente (incluye actualización de correo en Identity)
         public async Task<bool> EditarClienteAsync(int id, Cliente cliente)
