@@ -18,8 +18,8 @@
         {
             <tr>
                 <td>@c.IdCita</td>
-                <td>@c.Cliente?.Nombre</td>
-                <td>@c.IdUsuario</td>
+                <td>@(c.Cliente?.Nombre) @(c.Cliente?.Apellido1) @(c.Cliente?.Apellido2)</td>
+                <td>@(c.Trabajador?.Nombre) @(c.Trabajador?.Apellido)</td>
                 <td>@c.FechaHora</td>
                 <td>@c.Estado</td>
                 <td>@c.Total.ToString("C")</td>

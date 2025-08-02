@@ -42,5 +42,7 @@ namespace VenusBeauty.DAL.Entities
 
         // Productos reservados junto con la cita
         public ICollection<ReservaProducto> ReservaProductos { get; set; } = new List<ReservaProducto>();
+        [ForeignKey(nameof(IdUsuario))]
+        public Trabajador? Trabajador { get; set; }
     }
 }

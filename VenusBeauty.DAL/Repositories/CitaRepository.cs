@@ -26,7 +26,8 @@ namespace VenusBeauty.DAL.Repositories
         public async Task<Cita?> GetByIdAsync(int id)
         {
             return await _context.Citas
-                .Include(c => c.Cliente)                  // cliente asociado
+                .Include(c => c.Cliente)
+                .Include(c => c.Trabajador)
                 .Include(c => c.DetalleCitas)             // lista de servicios
                     .ThenInclude(d => d.Servicio)
                 .Include(c => c.ReservaProductos)          // lista de productos
@@ -44,6 +45,8 @@ namespace VenusBeauty.DAL.Repositories
             string? idUsuario = null)
         {
             var query = _context.Citas
+                .Include(c => c.Cliente)
+                .Include(c => c.Trabajador)
                 .Include(c => c.DetalleCitas)
                 .Include(c => c.ReservaProductos)
                 .Where(c => c.FechaHora >= desde && c.FechaHora < hasta);

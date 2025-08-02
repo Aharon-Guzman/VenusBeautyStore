@@ -38,6 +38,11 @@ namespace VenusBeauty.DAL.Context
       .WithOne()
       .HasForeignKey<Trabajador>(t => t.UserId)
       .OnDelete(DeleteBehavior.Cascade);
+          builder.Entity<Cita>()
+    .HasOne(c => c.Trabajador)
+    .WithMany()                    // sin colección inversa
+    .HasForeignKey(c => c.IdUsuario)
+    .HasPrincipalKey("UserId");    // ← string, NO genérico
         }
     }
 

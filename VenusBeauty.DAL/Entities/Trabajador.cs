@@ -31,5 +31,6 @@ namespace VenusBeauty.DAL.Entities
         // 🔹 Relación con Identity → Opcional
         [ForeignKey("UserId")]
         public ApplicationUser? User { get; set; }
+
     }
 }
