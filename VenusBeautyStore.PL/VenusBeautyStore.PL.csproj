@@ -24,7 +24,7 @@
   <ItemGroup>
     <Folder Include="Areas\Identity\Data\" />
     <Folder Include="Data\Migrations\" />
-    <Folder Include="wwwroot\images\productos\" />
+    <Folder Include="wwwroot\uploads\productos\" />
   </ItemGroup>
 
 </Project>
