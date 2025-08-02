@@ -1,4 +1,4 @@
-﻿@model VenusBeauty.DAL.Entities.Producto
+﻿@* @model VenusBeauty.DAL.Entities.Producto
 
 <h2>Editar Producto</h2>
 
@@ -43,6 +43,66 @@
 
     <button type="submit" class="btn btn-primary">Guardar Cambios</button>
     <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+ *@
+
+@model VenusBeauty.DAL.Entities.Producto
+
+<h2>Editar Producto</h2>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="IdProducto" />
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Descripción</label>
+        <textarea asp-for="Descripcion" class="form-control"></textarea>
+        <span asp-validation-for="Descripcion" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Precio</label>
+        <input asp-for="Precio" class="form-control" />
+        <span asp-validation-for="Precio" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Stock</label>
+        <input asp-for="Stock" class="form-control" />
+        <span asp-validation-for="Stock" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Imagen actual</label><br />
+        @if (!string.IsNullOrEmpty(Model.ImagenUrl))
+        {
+            <img src="@Model.ImagenUrl" alt="Imagen del producto" style="max-width: 200px;" />
+        }
+        else
+        {
+            <p>No hay imagen disponible.</p>
+        }
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Cambiar Imagen</label>
+        <input type="file" name="ImagenArchivo" class="form-control" accept="image/*" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
 </form>
 
 @section Scripts {

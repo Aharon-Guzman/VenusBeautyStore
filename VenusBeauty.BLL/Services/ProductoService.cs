@@ -8,7 +8,7 @@ using VenusBeauty.DAL.Repositories;
 
 namespace VenusBeauty.BLL.Services
 {
-    public class ProductoService : IProductoService 
+    public class ProductoService : IProductoService
     {
         private readonly IProductoRepository _productoRepository;
 
@@ -44,6 +44,7 @@ namespace VenusBeauty.BLL.Services
             prodDb.Precio = producto.Precio;
             prodDb.Stock = producto.Stock;
             prodDb.Activo = producto.Activo;
+            prodDb.ImagenUrl = producto.ImagenUrl;
 
             await _productoRepository.UpdateAsync(prodDb);
             await _productoRepository.SaveChangesAsync();
