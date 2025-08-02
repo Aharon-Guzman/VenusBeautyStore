@@ -47,12 +47,13 @@
                                 <a class="nav-link text-dark" asp-controller="UsuariosInternos" asp-action="Index">Personal</a>
                             </li>
                         }
-                        @if (User.IsInRole("Admin") || User.IsInRole("Recepcionista") || User.IsInRole("Estilista"))
+@*                         @if (User.IsInRole("Admin") || User.IsInRole("Recepcionista") || User.IsInRole("Estilista"))
                         {
-                            <li class="nav-item">
+ *@                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Citas" asp-action="Index">Citas</a>
                             </li>
-                        }
+@*                         }
+ *@
 @*                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
