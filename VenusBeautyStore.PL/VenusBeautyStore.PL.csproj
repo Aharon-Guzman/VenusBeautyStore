@@ -25,6 +25,7 @@
     <Folder Include="Areas\Identity\Data\" />
     <Folder Include="Data\Migrations\" />
     <Folder Include="wwwroot\uploads\productos\" />
+    <Folder Include="wwwroot\uploads\servicios\" />
   </ItemGroup>
 
 </Project>

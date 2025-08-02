@@ -44,6 +44,7 @@ namespace VenusBeauty.BLL.Services
             servDb.Precio = servicio.Precio;
             servDb.Duracion = servicio.Duracion;
             servDb.Activo = servicio.Activo;
+            servDb.ImagenUrl = servicio.ImagenUrl;
 
             await _servicioRepository.UpdateAsync(servDb);
             await _servicioRepository.SaveChangesAsync();
