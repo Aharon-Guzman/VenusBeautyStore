@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace VenusBeauty.DAL.Entities
 {
+    [Table("ReservaProductos")]
     public class ReservaProducto
     {
         [Key]

@@ -1,0 +1,29 @@
+﻿@model IEnumerable<VenusBeauty.DAL.Entities.Cita>
+
+<h2>Listado de Citas</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Cliente</th>
+            <th>Trabajador</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.IdCita</td>
+                <td>@c.Cliente?.Nombre</td>
+                <td>@c.IdUsuario</td>
+                <td>@c.FechaHora</td>
+                <td>@c.Estado</td>
+                <td>@c.Total.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>

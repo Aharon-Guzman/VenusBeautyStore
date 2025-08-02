@@ -3,9 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VenusBeauty.DAL.Entities
 {
@@ -17,24 +14,33 @@ namespace VenusBeauty.DAL.Entities
         [Required]
         public int IdCliente { get; set; }
 
+        // Id del trabajador (usuario interno) que atenderá la cita
         [Required]
-        public string? IdUsuario { get; set; } // Trabajador (de Identity)
+        public string IdUsuario { get; set; } = null!;
 
         [Required]
         public DateTime FechaHora { get; set; }
 
-        [Required]
-        [MaxLength(20)]
-        public string? Estado { get; set; }
+        // Nuevo: enum con los estados válidos
+        public EstadoCita Estado { get; set; } = EstadoCita.Reservada;
 
-        [Required]
         public bool Activo { get; set; } = true;
 
-        // Propiedades de navegación (FKs)
-        [ForeignKey("IdCliente")]
+        // Nuevo: importe total de la cita
+        public decimal Total { get; set; }
+
+        /* ---------- Propiedades de navegación ---------- */
+        [ForeignKey(nameof(IdCliente))]
         public Cliente? Cliente { get; set; }
 
+        // Se cargará aparte si alguna vez lo necesitas, por eso [NotMapped]
         [NotMapped]
-        public IdentityUser? Usuario { get; set; } // Trabajador (Identity)
+        public IdentityUser? Usuario { get; set; }
+
+        // Detalles de servicios incluidos en la cita
+        public ICollection<DetalleCita> DetalleCitas { get; set; } = new List<DetalleCita>();
+
+        // Productos reservados junto con la cita
+        public ICollection<ReservaProducto> ReservaProductos { get; set; } = new List<ReservaProducto>();
     }
 }

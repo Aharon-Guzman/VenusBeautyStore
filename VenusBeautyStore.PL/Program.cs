@@ -35,6 +35,10 @@ builder.Services.AddScoped<IServicioRepository, ServicioRepository>();
 builder.Services.AddScoped<IServicioService, ServicioService>();
 builder.Services.AddScoped<ITrabajadorRepository, TrabajadorRepository>();
 builder.Services.AddScoped<ITrabajadorService, TrabajadorService>();
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<ICitaRepository, CitaRepository>();
+builder.Services.AddScoped<ICitaService, CitaService>();
 
 // ✅ Razor Pages e MVC
 builder.Services.AddRazorPages();
