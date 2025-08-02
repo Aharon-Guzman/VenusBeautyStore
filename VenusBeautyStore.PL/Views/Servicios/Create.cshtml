@@ -60,6 +60,11 @@
         <textarea asp-for="Descripcion" class="form-control"></textarea>
         <span asp-validation-for="Descripcion" class="text-danger"></span>
     </div>
+    <div class="mb-3">
+        <label asp-for="Duracion" class="form-label"></label>
+        <input asp-for="Duracion" class="form-control" type="number" min="1" />
+        <span asp-validation-for="Duracion" class="text-danger"></span>
+    </div>
 
     <div class="mb-3">
         <label asp-for="Precio" class="form-label"></label>

@@ -23,7 +23,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
 })
-.AddEntityFrameworkStores<VenusBeautyContext>();
+.AddEntityFrameworkStores<VenusBeautyContext>()
+.AddDefaultTokenProviders();
 
 // ✅ Registrar Repositories y Services
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
