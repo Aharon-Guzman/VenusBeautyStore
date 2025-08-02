@@ -29,6 +29,11 @@
         <span asp-validation-for="Stock" class="text-danger"></span>
     </div>
 
+    <div class="mb-3">
+        <label class="form-label">Imagen</label>
+        <input type="file" name="ImagenArchivo" class="form-control" accept="image/*" />
+    </div>
+
     <button type="submit" class="btn btn-primary">Guardar</button>
     <a asp-action="Index" class="btn btn-secondary">Volver</a>
 </form>

@@ -29,5 +29,8 @@ namespace VenusBeauty.DAL.Entities
 
         [Required]
         public bool Activo { get; set; } = true;
+        [MaxLength(255)]
+        public string? ImagenUrl { get; set; }
+
     }
 }

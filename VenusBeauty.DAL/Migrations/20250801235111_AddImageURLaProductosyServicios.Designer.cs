@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VenusBeauty.DAL.Context;
 
@@ -11,9 +12,11 @@ using VenusBeauty.DAL.Context;
 namespace VenusBeauty.DAL.Migrations
 {
     [DbContext(typeof(VenusBeautyContext))]
-    partial class VenusBeautyContextModelSnapshot : ModelSnapshot
+    [Migration("20250801235111_AddImageURLaProductosyServicios")]
+    partial class AddImageURLaProductosyServicios
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
