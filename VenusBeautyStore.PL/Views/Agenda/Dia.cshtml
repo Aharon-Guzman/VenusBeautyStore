@@ -1,0 +1,33 @@
+﻿@model VenusBeautyStore.PL.Models.AgendaDiaViewModel
+@{
+    ViewData["Title"] = "Agenda diaria";
+}
+
+<h2>Agenda del día @Model.Fecha.ToString("dd/MM/yyyy")</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Hora</th>
+            <th>Cliente</th>
+            <th>Estilista</th>
+            <th>Servicios</th>
+            <th>Productos</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cita in Model.Citas.OrderBy(c => c.Hora))
+        {
+            <tr>
+                <td>@cita.Hora.ToString("HH:mm")</td>
+                <td>@cita.Cliente</td>
+                <td>@cita.Estilista</td>
+                <td>@cita.Servicios</td>
+                <td>@cita.Productos</td>
+                <td>@cita.Estado</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

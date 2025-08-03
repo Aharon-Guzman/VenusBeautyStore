@@ -48,7 +48,10 @@ namespace VenusBeauty.DAL.Repositories
                 .Include(c => c.Cliente)
                 .Include(c => c.Trabajador)
                 .Include(c => c.DetalleCitas)
+                .ThenInclude(d => d.Servicio)
                 .Include(c => c.ReservaProductos)
+                .ThenInclude(r => r.Producto)
+                .Include(c => c.Trabajador)
                 .Where(c => c.FechaHora >= desde && c.FechaHora < hasta);
 
             if (!string.IsNullOrEmpty(idUsuario))
