@@ -112,23 +112,29 @@ namespace VenusBeauty.BLL.Services
 
         public async Task<bool> EliminarTrabajadorAsync(int id)
         {
+
             var trabajador = await _trabajadorRepository.GetByIdAsync(id);
             if (trabajador == null)
                 return false;
 
-            if (!string.IsNullOrEmpty(trabajador.UserId))
+            // 🔹 Verificar si tiene citas asignadas
+            var tieneCitas = await _trabajadorRepository.TieneCitasAsync(trabajador.UserId);
+            if (tieneCitas)
+                return false;
+
+            string? userId = trabajador.UserId;
+
+            // ✅ 1️⃣ Eliminar primero el trabajador de la BD
+            await _trabajadorRepository.DeleteAsync(trabajador);
+            await _trabajadorRepository.SaveChangesAsync();
+
+            // ✅ 2️⃣ Después eliminar el usuario Identity
+            if (!string.IsNullOrEmpty(userId))
             {
-                var user = await _userManager.FindByIdAsync(trabajador.UserId);
+                var user = await _userManager.FindByIdAsync(userId);
                 if (user != null)
                     await _userManager.DeleteAsync(user);
             }
-
-            var trabajadorRefrescado = await _trabajadorRepository.GetByIdAsync(id);
-            if (trabajadorRefrescado == null)
-                return true;
-
-            await _trabajadorRepository.DeleteAsync(trabajadorRefrescado);
-            await _trabajadorRepository.SaveChangesAsync();
 
             return true;
         }

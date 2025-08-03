@@ -3,42 +3,24 @@
 @{
     ViewData["Title"] = "Usuarios Internos";
 }
-
-@* <h2 class="mb-3">Usuarios Internos</h2>
-
-<a asp-action="Create" class="btn btn-primary mb-3">➕ Nuevo Usuario Interno</a>
-
-<table class="table table-bordered table-striped">
-    <thead class="table-dark">
-        <tr>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Teléfono</th>
-            <th>Rol</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var t in Model)
-        {
-            <tr>
-                <td>@t.Nombre</td>
-                <td>@t.Apellido</td>
-                <td>@t.Telefono</td>
-                <td>@t.Rol</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@t.IdTrabajador" class="btn btn-sm btn-warning">✏️ Editar</a>
-
-                    <form asp-action="Delete" asp-route-id="@t.IdTrabajador" method="post" style="display:inline;">
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Seguro de eliminar este usuario?');">🗑 Eliminar</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
- *@
 <h2>Lista de Usuarios Internos</h2>
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
 
 <table class="table table-bordered">
     <thead>
@@ -80,4 +62,13 @@
 </div>
 @section Scripts {
     <script src="~/js/trabajadores/trabajadores.js"></script>
+    <script>
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.classList.remove('show'); // inicia la animación de ocultar
+                setTimeout(() => alert.remove(), 500); // elimina el elemento después de 0.5s
+            });
+        }, 4000); // 4 segundos antes de desaparecer
+    </script>
 }

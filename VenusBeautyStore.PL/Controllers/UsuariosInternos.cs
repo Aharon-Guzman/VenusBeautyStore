@@ -307,7 +307,15 @@ namespace VenusBeautyStore.PL.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _trabajadorService.EliminarTrabajadorAsync(id);
+            var eliminado = await _trabajadorService.EliminarTrabajadorAsync(id);
+
+            if (!eliminado)
+            {
+                TempData["Error"] = "No se puede eliminar este estilista porque tiene citas registradas.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["Success"] = "El estilista fue eliminado correctamente.";
             return RedirectToAction(nameof(Index));
         }
 

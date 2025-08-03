@@ -17,5 +17,7 @@ namespace VenusBeauty.DAL.Repositories
         Task SaveChangesAsync();
         Task<IEnumerable<Trabajador>> GetEstilistasAsync();
         Task<IEnumerable<Trabajador>> GetEstilistasActivosAsync();
+        Task<bool> TieneCitasAsync(string userId);
+
     }
 }

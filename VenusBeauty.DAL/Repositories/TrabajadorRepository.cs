@@ -56,6 +56,11 @@ namespace VenusBeauty.DAL.Repositories
                 .Where(t => t.Rol == "Estilista" && t.Activo)
                 .ToListAsync();
         }
+        public async Task<bool> TieneCitasAsync(string userId)
+        {
+            return await _context.Citas.AnyAsync(c => c.IdUsuario == userId);
+        }
+
     }
 
 }
