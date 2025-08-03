@@ -129,6 +129,25 @@ namespace VenusBeautyStore.PL.Controllers
             return View(producto);
         }
 
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    var prodDb = await _productoService.ObtenerPorIdAsync(id);
+        //    if (prodDb == null)
+        //        return NotFound();
+
+        //    // 🗑️ Eliminar la imagen asociada si existe
+        //    if (!string.IsNullOrEmpty(prodDb.ImagenUrl))
+        //    {
+        //        string filePath = Path.Combine(_webHostEnvironment.WebRootPath, prodDb.ImagenUrl.TrimStart('/'));
+        //        if (System.IO.File.Exists(filePath))
+        //            System.IO.File.Delete(filePath);
+        //    }
+
+        //    await _productoService.EliminarProductoAsync(id);
+        //    return RedirectToAction(nameof(Index));
+        //}
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -137,7 +156,14 @@ namespace VenusBeautyStore.PL.Controllers
             if (prodDb == null)
                 return NotFound();
 
-            // 🗑️ Eliminar la imagen asociada si existe
+            var eliminado = await _productoService.EliminarProductoAsync(id);
+            if (!eliminado)
+            {
+                TempData["Error"] = "No se puede eliminar este producto porque está asociado a una o más citas.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // 🗑️ Eliminar imagen física si existe
             if (!string.IsNullOrEmpty(prodDb.ImagenUrl))
             {
                 string filePath = Path.Combine(_webHostEnvironment.WebRootPath, prodDb.ImagenUrl.TrimStart('/'));
@@ -145,9 +171,10 @@ namespace VenusBeautyStore.PL.Controllers
                     System.IO.File.Delete(filePath);
             }
 
-            await _productoService.EliminarProductoAsync(id);
+            TempData["Success"] = "El producto fue eliminado correctamente.";
             return RedirectToAction(nameof(Index));
         }
+
 
         // ✅ Cambiar estado (botón slide con AJAX)
         [HttpPost]

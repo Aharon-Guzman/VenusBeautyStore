@@ -87,8 +87,9 @@ namespace VenusBeautyStore.PL.Controllers
                      .Select(s => new SelectListItem(s.Nombre, s.IdServicio.ToString())),
 
 
-                Productos = (await _productoService.ObtenerProductosAsync())
+                Productos = (await _productoService.ObtenerProductosActivosAsync())
                     .Select(p => new SelectListItem(p.Nombre, p.IdProducto.ToString()))
+
             };
 
             if (User.IsInRole("Admin") || User.IsInRole("Recepcionista"))

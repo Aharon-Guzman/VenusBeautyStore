@@ -16,5 +16,7 @@ namespace VenusBeauty.DAL.Repositories
         Task UpdateAsync(Producto producto);
         Task DeleteAsync(Producto producto);
         Task SaveChangesAsync();
+        Task<bool> TieneReservasAsync(int idProducto);
+
     }
 }

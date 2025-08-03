@@ -55,11 +55,16 @@ namespace VenusBeauty.BLL.Services
         public async Task<bool> EliminarProductoAsync(int id)
         {
             var prodDb = await _productoRepository.GetByIdAsync(id);
-            if (prodDb == null) return false;
+            if (prodDb == null)
+                return false;
+
+            // ✅ Verificar si el producto está en alguna reserva
+            bool tieneReservas = await _productoRepository.TieneReservasAsync(id);
+            if (tieneReservas)
+                return false; // ❌ No eliminar porque está en uso
 
             await _productoRepository.DeleteAsync(prodDb);
             await _productoRepository.SaveChangesAsync();
-
             return true;
         }
 
@@ -75,5 +80,11 @@ namespace VenusBeauty.BLL.Services
 
             return true;
         }
+        public async Task<IEnumerable<Producto>> ObtenerProductosActivosAsync()
+        {
+            var productos = await _productoRepository.GetAllAsync();
+            return productos.Where(p => p.Activo);
+        }
+
     }
 }

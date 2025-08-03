@@ -15,5 +15,7 @@ namespace VenusBeauty.BLL.Services
         Task<bool> EditarProductoAsync(int id, Producto producto);
         Task<bool> EliminarProductoAsync(int id);
         Task<bool> CambiarEstadoAsync(int id);
+        Task<IEnumerable<Producto>> ObtenerProductosActivosAsync();
+
     }
 }
