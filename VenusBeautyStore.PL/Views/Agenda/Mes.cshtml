@@ -1,0 +1,51 @@
+﻿@model VenusBeautyStore.PL.Models.AgendaMesViewModel
+@{
+    ViewData["Title"] = "Agenda mensual";
+}
+
+<h2>Agenda de @Model.Mes.ToString("MMMM yyyy")</h2>
+
+<table class="table table-bordered text-center">
+    <thead>
+        <tr>
+            <th>Lun</th>
+            <th>Mar</th>
+            <th>Mié</th>
+            <th>Jue</th>
+            <th>Vie</th>
+            <th>Sáb</th>
+            <th>Dom</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var semana in Model.Semanas)
+        {
+            <tr>
+                @foreach (var dia in semana)
+                {
+                    if (dia.Fecha == null)
+                    {
+                        <td></td>
+                    }
+                    else
+                    {
+                        <td style="vertical-align: top;">
+                            <strong>@dia.Fecha.Value.Day</strong><br />
+
+                            @foreach (var cita in dia.Citas)
+                            {
+                                <div style="font-size: 0.8em;">
+                                    @cita.Hora.ToString("HH:mm") - @cita.Cliente
+                                </div>
+                            }
+
+                        </td>
+                    }
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="mb-3">
+    <a class="btn btn-primary" asp-controller="Agenda" asp-action="Index">Volver</a>
+</div>
