@@ -16,6 +16,8 @@ namespace VenusBeauty.DAL.Repositories
         Task UpdateAsync(Servicio servicio);
         Task DeleteAsync(Servicio servicio);
         Task SaveChangesAsync();
+        Task<bool> TieneCitasAsync(int idServicio);
+
 
     }
 }

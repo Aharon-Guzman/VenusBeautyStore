@@ -15,5 +15,7 @@ namespace VenusBeauty.BLL.Services
         Task<bool> EditarServicioAsync(int id, Servicio servicio);
         Task<bool> EliminarServicioAsync(int id);
         Task<bool> CambiarEstadoAsync(int id);
+        Task<IEnumerable<Servicio>> ObtenerServiciosActivosAsync();
+
     }
 }

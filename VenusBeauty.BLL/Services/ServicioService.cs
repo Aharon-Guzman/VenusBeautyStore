@@ -54,7 +54,13 @@ namespace VenusBeauty.BLL.Services
         public async Task<bool> EliminarServicioAsync(int id)
         {
             var servDb = await _servicioRepository.GetByIdAsync(id);
-            if (servDb == null) return false;
+            if (servDb == null)
+                return false;
+
+            // 🔹 Verificar si el servicio está asociado a alguna cita
+            bool tieneCitas = await _servicioRepository.TieneCitasAsync(id);
+            if (tieneCitas)
+                return false; // ❌ No eliminar porque está en uso
 
             await _servicioRepository.DeleteAsync(servDb);
             await _servicioRepository.SaveChangesAsync();
@@ -72,5 +78,11 @@ namespace VenusBeauty.BLL.Services
             await _servicioRepository.SaveChangesAsync();
             return true;
         }
+        public async Task<IEnumerable<Servicio>> ObtenerServiciosActivosAsync()
+        {
+            var servicios = await _servicioRepository.GetAllAsync();
+            return servicios.Where(s => s.Activo);
+        }
+
     }
 }

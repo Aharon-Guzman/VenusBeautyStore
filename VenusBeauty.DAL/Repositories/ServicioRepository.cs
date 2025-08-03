@@ -48,5 +48,10 @@ namespace VenusBeauty.DAL.Repositories
         {
             await _context.SaveChangesAsync();
         }
+        public async Task<bool> TieneCitasAsync(int idServicio)
+        {
+            return await _context.DetalleCitas.AnyAsync(dc => dc.IdServicio == idServicio);
+        }
+
     }
 }

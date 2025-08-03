@@ -1,6 +1,22 @@
 ﻿@model IEnumerable<VenusBeauty.DAL.Entities.Servicio>
 
 <h2>Lista de Servicios</h2>
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 
 <form id="antiForgeryForm" method="post">
     @Html.AntiForgeryToken()
@@ -47,4 +63,13 @@
 
 @section Scripts {
     <script src="~/js/servicios/servicios.js"></script>
+    <script>
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.classList.remove('show');
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 4000); // 4 segundos
+    </script>
 }
