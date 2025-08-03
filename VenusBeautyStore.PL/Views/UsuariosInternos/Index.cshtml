@@ -47,6 +47,7 @@
             <th>Apellido</th>
             <th>Teléfono</th>
             <th>Rol</th>
+            <th>Activo</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -59,6 +60,13 @@
                 <td>@trabajador.Telefono</td>
                 <td>@trabajador.Rol</td>
                 <td>
+                    <div class="form-check form-switch">
+                        <input type="checkbox" class="form-check-input toggle-activo-trabajador"
+                               data-id="@trabajador.IdTrabajador"
+                               @(trabajador.Activo ? "checked" : "") />
+                    </div>
+                </td>
+                <td>
                     <a asp-action="Edit" asp-route-id="@trabajador.IdTrabajador" class="btn btn-sm btn-warning">Editar</a>
                     <a asp-action="Delete" asp-route-id="@trabajador.IdTrabajador" class="btn btn-sm btn-danger">Eliminar</a>
                 </td>
@@ -70,3 +78,6 @@
 <div class="mb-3">
     <a class="btn btn-primary" asp-controller="UsuariosInternos" asp-action="Create">Nuevo Usuario Interno</a>
 </div>
+@section Scripts {
+    <script src="~/js/trabajadores/trabajadores.js"></script>
+}

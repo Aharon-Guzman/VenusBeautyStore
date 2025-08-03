@@ -322,5 +322,20 @@ namespace VenusBeautyStore.PL.Controllers
 
             return new List<string>();
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleActivo(int id)
+        {
+            var trabajador = await _trabajadorService.ObtenerPorIdAsync(id);
+            if (trabajador == null)
+                return NotFound();
+
+            trabajador.Activo = !trabajador.Activo;
+            await _trabajadorService.EditarTrabajadorAsync(id, trabajador);
+
+            return Ok();
+        }
+
+
     }
 }

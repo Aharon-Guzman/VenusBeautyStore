@@ -175,5 +175,10 @@ namespace VenusBeauty.BLL.Services
         {
             return await _trabajadorRepository.GetEstilistasAsync();
         }
+        public async Task<IEnumerable<Trabajador>> ObtenerEstilistasActivosAsync()
+        {
+            return await _trabajadorRepository.GetEstilistasActivosAsync();
+        }
+
     }
 }

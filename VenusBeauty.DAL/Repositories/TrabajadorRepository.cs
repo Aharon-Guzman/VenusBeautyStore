@@ -47,6 +47,14 @@ namespace VenusBeauty.DAL.Repositories
             return await _context.Trabajadores
                 .Where(t => t.Rol == "Estilista")
                 .ToListAsync();
+
+        }
+        public async Task<IEnumerable<Trabajador>> GetEstilistasActivosAsync()
+        {
+
+            return await _context.Trabajadores
+                .Where(t => t.Rol == "Estilista" && t.Activo)
+                .ToListAsync();
         }
     }
 

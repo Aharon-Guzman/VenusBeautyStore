@@ -32,5 +32,7 @@ namespace VenusBeauty.DAL.Entities
         [ForeignKey("UserId")]
         public ApplicationUser? User { get; set; }
 
+        public bool Activo { get; set; } = true;
+
     }
 }
