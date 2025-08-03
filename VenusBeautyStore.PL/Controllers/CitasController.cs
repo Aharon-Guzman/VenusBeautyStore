@@ -266,55 +266,120 @@ namespace VenusBeautyStore.PL.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CitaCreateViewModel vm)
+        //{
+        //    /* Validación: al menos un servicio seleccionado */
+        //    if (vm.ServiciosSeleccionados == null || !vm.ServiciosSeleccionados.Any())
+        //        ModelState.AddModelError(nameof(vm.ServiciosSeleccionados),
+        //                                 "Seleccione al menos un servicio.");
+        //    if (vm.FechaHora < DateTime.Now)
+        //    {
+        //        ModelState.AddModelError(nameof(vm.FechaHora),
+        //            "No puede reservar una cita en el pasado.");
+        //    }
+        //    if (!ModelState.IsValid)
+        //    {
+        //        /* Recarga listas para redisplay */
+        //        vm.Trabajadores = (await _trabajadorService.ObtenerTrabajadoresAsync())
+        //            .Select(t => new SelectListItem($"{t.Nombre} {t.Apellido}", t.UserId));
+
+        //        vm.Servicios = (await _servicioService.ObtenerServiciosAsync())
+        //            .Select(s => new SelectListItem(s.Nombre, s.IdServicio.ToString()));
+
+        //        vm.Productos = (await _productoService.ObtenerProductosAsync())
+        //            .Select(p => new SelectListItem(p.Nombre, p.IdProducto.ToString()));
+
+        //        if (User.IsInRole("Admin") || User.IsInRole("Recepcionista"))
+        //        {
+        //            vm.Clientes = (await _clienteService.ObtenerClientesAsync())
+        //                .Select(c => new SelectListItem($"{c.Nombre} {c.Apellido1} {c.Apellido2}".Trim(),
+        //                                                c.IdCliente.ToString()));
+        //        }
+
+        //        return View(vm);
+        //    }
+
+
+
+        //    /* Productos marcados y cantidad > 0 */
+        //    var productosFiltrados = vm.ProductosSeleccionados?
+        //        .Where(kvp => kvp.Value > 0)
+        //        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+        //    /* Guarda la cita */
+        //    await _citaService.CrearCitaAsync(
+        //        vm.IdCliente,
+        //        vm.IdUsuario,
+        //        vm.FechaHora,
+        //        vm.ServiciosSeleccionados,
+        //        productosFiltrados);
+
+        //    TempData["Success"] = "Cita registrada correctamente.";
+        //    return RedirectToAction(nameof(Index));
+        //}
         {
-            /* Validación: al menos un servicio seleccionado */
+            // Validación: al menos un servicio seleccionado
             if (vm.ServiciosSeleccionados == null || !vm.ServiciosSeleccionados.Any())
+            {
                 ModelState.AddModelError(nameof(vm.ServiciosSeleccionados),
                                          "Seleccione al menos un servicio.");
+            }
+
+            // Validar que no sea en el pasado
             if (vm.FechaHora < DateTime.Now)
             {
                 ModelState.AddModelError(nameof(vm.FechaHora),
-                    "No puede reservar una cita en el pasado.");
+                                         "No puede reservar una cita en el pasado.");
             }
+
             if (!ModelState.IsValid)
             {
-                /* Recarga listas para redisplay */
-                vm.Trabajadores = (await _trabajadorService.ObtenerTrabajadoresAsync())
-                    .Select(t => new SelectListItem($"{t.Nombre} {t.Apellido}", t.UserId));
-
-                vm.Servicios = (await _servicioService.ObtenerServiciosAsync())
-                    .Select(s => new SelectListItem(s.Nombre, s.IdServicio.ToString()));
-
-                vm.Productos = (await _productoService.ObtenerProductosAsync())
-                    .Select(p => new SelectListItem(p.Nombre, p.IdProducto.ToString()));
-
-                if (User.IsInRole("Admin") || User.IsInRole("Recepcionista"))
-                {
-                    vm.Clientes = (await _clienteService.ObtenerClientesAsync())
-                        .Select(c => new SelectListItem($"{c.Nombre} {c.Apellido1} {c.Apellido2}".Trim(),
-                                                        c.IdCliente.ToString()));
-                }
-
+                await CargarListas(vm);
                 return View(vm);
             }
 
+            try
+            {
+                var productosFiltrados = vm.ProductosSeleccionados?
+                    .Where(kvp => kvp.Value > 0)
+                    .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
+                await _citaService.CrearCitaAsync(
+                    vm.IdCliente,
+                    vm.IdUsuario,
+                    vm.FechaHora,
+                    vm.ServiciosSeleccionados,
+                    productosFiltrados);
 
-            /* Productos marcados y cantidad > 0 */
-            var productosFiltrados = vm.ProductosSeleccionados?
-                .Where(kvp => kvp.Value > 0)
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                TempData["Success"] = "Cita registrada correctamente.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (InvalidOperationException ex)
+            {
+                // ⚠️ Si hay solapamiento u otro error de negocio
+                ModelState.AddModelError(string.Empty, ex.Message);
+                await CargarListas(vm);
+                return View(vm);
+            }
+        }
 
-            /* Guarda la cita */
-            await _citaService.CrearCitaAsync(
-                vm.IdCliente,
-                vm.IdUsuario,
-                vm.FechaHora,
-                vm.ServiciosSeleccionados,
-                productosFiltrados);
+        private async Task CargarListas(CitaCreateViewModel vm)
+        {
+            vm.Trabajadores = (await _trabajadorService.ObtenerTrabajadoresAsync())
+                .Select(t => new SelectListItem($"{t.Nombre} {t.Apellido}", t.UserId));
 
-            TempData["Success"] = "Cita registrada correctamente.";
-            return RedirectToAction(nameof(Index));
+            vm.Servicios = (await _servicioService.ObtenerServiciosAsync())
+                .Select(s => new SelectListItem(s.Nombre, s.IdServicio.ToString()));
+
+            vm.Productos = (await _productoService.ObtenerProductosAsync())
+                .Select(p => new SelectListItem(p.Nombre, p.IdProducto.ToString()));
+
+            if (User.IsInRole("Admin") || User.IsInRole("Recepcionista"))
+            {
+                vm.Clientes = (await _clienteService.ObtenerClientesAsync())
+                    .Select(c => new SelectListItem(
+                        $"{c.Nombre} {c.Apellido1} {c.Apellido2}".Trim(),
+                        c.IdCliente.ToString()));
+            }
         }
     }
 }
