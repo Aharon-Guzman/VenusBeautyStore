@@ -15,5 +15,6 @@ namespace VenusBeauty.DAL.Repositories
         Task UpdateAsync(Trabajador trabajador);
         Task DeleteAsync(Trabajador trabajador);
         Task SaveChangesAsync();
+        Task<IEnumerable<Trabajador>> GetEstilistasAsync();
     }
 }

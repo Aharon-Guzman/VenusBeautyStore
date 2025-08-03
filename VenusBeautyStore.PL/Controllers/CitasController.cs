@@ -228,7 +228,7 @@ namespace VenusBeautyStore.PL.Controllers
         {
             var vm = new CitaCreateViewModel
             {
-                Trabajadores = (await _trabajadorService.ObtenerTrabajadoresAsync())
+                Trabajadores = (await _trabajadorService.ObtenerEstilistasAsync())
                     .Select(t => new SelectListItem($"{t.Nombre} {t.Apellido}", t.UserId)),
 
                 Servicios = (await _servicioService.ObtenerServiciosAsync())
