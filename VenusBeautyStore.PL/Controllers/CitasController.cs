@@ -256,7 +256,9 @@ namespace VenusBeautyStore.PL.Controllers
                 vm.IdCliente = cliente.IdCliente;
             }
 
-            vm.FechaHora = DateTime.Now.AddHours(1);
+            //vm.FechaHora = DateTime.Now.AddHours(1);
+            var ahora = DateTime.Now.AddHours(1);
+            vm.FechaHora = new DateTime(ahora.Year, ahora.Month, ahora.Day, ahora.Hour, ahora.Minute, 0);
             return View(vm);
         }
 
@@ -269,7 +271,11 @@ namespace VenusBeautyStore.PL.Controllers
             if (vm.ServiciosSeleccionados == null || !vm.ServiciosSeleccionados.Any())
                 ModelState.AddModelError(nameof(vm.ServiciosSeleccionados),
                                          "Seleccione al menos un servicio.");
-
+            if (vm.FechaHora < DateTime.Now)
+            {
+                ModelState.AddModelError(nameof(vm.FechaHora),
+                    "No puede reservar una cita en el pasado.");
+            }
             if (!ModelState.IsValid)
             {
                 /* Recarga listas para redisplay */
@@ -291,6 +297,8 @@ namespace VenusBeautyStore.PL.Controllers
 
                 return View(vm);
             }
+
+
 
             /* Productos marcados y cantidad > 0 */
             var productosFiltrados = vm.ProductosSeleccionados?

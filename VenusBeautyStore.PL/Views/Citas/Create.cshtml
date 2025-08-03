@@ -33,7 +33,9 @@
     <!-- ▸ Fecha y hora -->
     <div class="mb-3">
         <label asp-for="FechaHora" class="form-label">Fecha y hora</label>
-        <input asp-for="FechaHora" type="datetime-local" class="form-control" />
+        <input asp-for="FechaHora" type="datetime-local" class="form-control"
+               value="@Model.FechaHora.ToString("yyyy-MM-ddTHH:mm")"
+               min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
         <span asp-validation-for="FechaHora" class="text-danger"></span>
     </div>
 

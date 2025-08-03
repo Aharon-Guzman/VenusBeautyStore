@@ -1,0 +1,45 @@
+﻿@model VenusBeautyStore.PL.Models.AgendaSemanalViewModel
+@{
+    ViewData["Title"] = "Agenda semanal";
+}
+
+<h2>Agenda de la semana que inicia @Model.Inicio.ToString("dd/MM/yyyy")</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            @foreach (var d in Model.Dias)
+            {
+                <th class="text-center">@d.Fecha.ToString("ddd dd")</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @* Máximo de citas en un día para saber cuántas filas necesitamos *@
+        @{
+            int maxFilas = Model.Dias.Max(d => d.Citas.Count());
+        }
+        @for (int fila = 0; fila < maxFilas; fila++)
+        {
+            <tr>
+                @foreach (var dia in Model.Dias)
+                {
+                    var cita = dia.Citas.ElementAtOrDefault(fila);
+                    if (cita is null)
+                    {
+                        <td></td>
+                    }
+                    else
+                    {
+                        <td>
+                            <div><strong>@cita.Hora.ToString("HH:mm")</strong></div>
+                            <div>@cita.Cliente</div>
+                            <div><small>@cita.Estilista</small></div>
+                            <div><small>@cita.Servicios</small></div>
+                        </td>
+                    }
+                }
+            </tr>
+        }
+    </tbody>
+</table>
