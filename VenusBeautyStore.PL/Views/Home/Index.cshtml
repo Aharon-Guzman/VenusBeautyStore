@@ -1,8 +1,19 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="vb-hero full-bleed d-flex align-items-center">
+    <div class="container-xl text-center">
+        <h1>Venus Beauty Store</h1>
+
+        <a class="btn vb-btn-dark vb-cta"
+           asp-area="Identity"
+           asp-page="/Account/Register">
+            Crear Cuenta
+        </a>
+    </div>
+</section>
+
+<!-- Opcional: anclas que usaremos luego para el scroll del menú -->
+<section id="servicios" class="py-5"></section>
+<section id="productos" class="py-5"></section>

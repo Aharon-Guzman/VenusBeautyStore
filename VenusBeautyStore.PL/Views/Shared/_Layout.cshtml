@@ -12,53 +12,30 @@
     <link rel="stylesheet" href="~/VenusBeautyStore.PL.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Venus Beauty Store</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        @* ✅ Mostrar solo a Admin o Recepcionista *@
-                        @if (User.IsInRole("Admin") || User.IsInRole("Recepcionista"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Clientes" asp-action="Index">Clientes</a>
-                            </li>
-                        }
-                        @if (User.IsInRole("Admin") || User.IsInRole("Recepcionista"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Productos" asp-action="Index">Productos</a>
-                            </li>
-                        }
-                        @if (User.IsInRole("Admin") || User.IsInRole("Recepcionista"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Servicios" asp-action="Index">Servicios</a>
-                            </li>
-                        }
-                        @if (User.IsInRole("Admin") || User.IsInRole("Recepcionista"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="UsuariosInternos" asp-action="Index">Personal</a>
-                            </li>
-                        }
-                          <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Citas" asp-action="Index">Citas</a>
-                            </li>
-                        @if (User.IsInRole("Admin") || User.IsInRole("Recepcionista") || User.IsInRole("Recepcionista"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Agenda" asp-action="Index">Agenda</a>
-                            </li>
-                        }
-                    </ul>
+    <header class="vb-navbar">
+        <nav class="container-xl d-flex align-items-center">
+            <a class="vb-brand text-decoration-none me-4"
+               asp-area="" asp-controller="Home" asp-action="Index">
+                Venus Beauty
+            </a>
+
+            <ul class="vb-nav list-unstyled d-flex mb-0">
+                <li><a asp-controller="Servicios" asp-action="Index">Servicios</a></li>
+                <li><a asp-controller="Productos" asp-action="Index">Productos</a></li>
+                <li><a asp-controller="Citas" asp-action="Create">Reserva</a></li>
+                <li><a asp-controller="Home" asp-action="Privacy">Acerca de</a></li>
+                <li><a asp-controller="Home" asp-action="Privacy">Contacto</a></li>
+            </ul>
+
+            <div class="ms-auto">
+                @if (!(User?.Identity?.IsAuthenticated ?? false))
+                {
+                    <a class="btn vb-btn-dark" asp-area="Identity" asp-page="/Account/Login">Iniciar Sesión</a>
+                }
+                else
+                {
                     <partial name="_LoginPartial" />
-                </div>
+                }
             </div>
         </nav>
     </header>
@@ -68,9 +45,28 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - VenusBeautyStore.PL - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="vb-footer">
+        <div class="container-xl d-flex justify-content-between align-items-center">
+            <div class="vb-social d-flex gap-4">
+                <!-- LinkedIn -->
+                <a href="#" class="vb-social-link" aria-label="LinkedIn">
+                    <svg viewBox="0 0 24 24"><path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V24h-4V8zm7.5 0h3.8v2.2h.05c.53-1 1.84-2.2 3.78-2.2 4.05 0 4.8 2.67 4.8 6.15V24h-4v-7.1c0-1.7-.03-3.9-2.38-3.9-2.38 0-2.75 1.86-2.75 3.78V24h-4V8z" /></svg>
+                </a>
+                <!-- Instagram -->
+                <a href="#" class="vb-social-link" aria-label="Instagram">
+                    <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 1.9.26 2.3.43.6.23 1 .5 1.5.95.45.45.72.84.95 1.5.17.4.37 1.1.43 2.3.07 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.06 1.2-.26 1.9-.43 2.3-.23.6-.5 1-.95 1.5-.45.45-.84.72-1.5.95-.4.17-1.1.37-2.3.43-1.3.07-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.06-1.9-.26-2.3-.43-.6-.23-1-.5-1.5-.95a3.8 3.8 0 0 1-.95-1.5c-.17-.4-.37-1.1-.43-2.3C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.06-1.2.26-1.9.43-2.3.23-.6.5-1 .95-1.5.45-.45.84-.72 1.5-.95.4-.17 1.1-.37 2.3-.43C8.4 2.2 8.8 2.2 12 2.2z" /><path d="M12 5.8A6.2 6.2 0 1 0 18.2 12 6.2 6.2 0 0 0 12 5.8zm0 10.2A4 4 0 1 1 16 12a4 4 0 0 1-4 4z" /><circle cx="18.4" cy="5.6" r="1.3" /></svg>
+                </a>
+                <!-- Facebook -->
+                <a href="#" class="vb-social-link" aria-label="Facebook">
+                    <svg viewBox="0 0 24 24"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7h-2.7v-2.9h2.7V9.4c0-2.7 1.6-4.2 4-4.2 1.2 0 2.5.2 2.5.2v2.7h-1.4c-1.4 0-1.8.9-1.8 1.8v2.2h3l-.5 2.9h-2.5v7A10 10 0 0 0 22 12z" /></svg>
+                </a>
+            </div>
+
+            <ul class="vb-footer-links d-flex gap-5 mb-0">
+                <li><a href="#">Dirección</a></li>
+                <li><a href="#">Ayuda</a></li>
+                <li><a asp-controller="Home" asp-action="Privacy">Contacto</a></li>
+            </ul>
         </div>
     </footer>
 
@@ -82,3 +78,4 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+

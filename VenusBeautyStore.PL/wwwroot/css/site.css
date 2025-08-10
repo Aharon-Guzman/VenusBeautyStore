@@ -20,3 +20,131 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* ===== NAVBAR estilo mockup ===== */
+.vb-navbar {
+    background: #e6e6e6;
+    min-height: 100px
+}
+
+    .vb-navbar .container-xl {
+        min-height: 100px
+    }
+
+.vb-brand {
+    font-weight: 600;
+    font-size: 24px;
+    color: #111
+}
+
+    .vb-brand:hover {
+        color: #111;
+        text-decoration: none
+    }
+
+.vb-nav {
+    gap: 40px;
+    flex: 1;
+    justify-content: center;
+    align-items: center
+}
+
+    .vb-nav li {
+        display: inline-flex
+    }
+
+    .vb-nav a {
+        color: #333;
+        text-decoration: none;
+        font-size: 16px
+    }
+
+        .vb-nav a:hover {
+            color: #000
+        }
+
+.vb-btn-dark {
+    background: #000;
+    color: #fff;
+    border: 0;
+    padding: 10px 18px;
+    min-width: 150px;
+    height: 45px;
+    border-radius: 0
+}
+
+/* Layout base para que el footer quede abajo */
+html, body {
+    height: 100%
+}
+
+body {
+    display: flex;
+    flex-direction: column
+}
+
+main {
+    flex: 1 0 auto
+}
+
+/* ===== FOOTER ===== */
+.vb-footer {
+    background: #f0f0f0;
+    padding: 28px 0
+}
+
+.vb-social-link svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+    fill: #000
+}
+
+.vb-footer-links {
+    list-style: none;
+    padding: 0
+}
+
+    .vb-footer-links a {
+        color: #333;
+        text-decoration: none;
+        font-size: 16px
+    }
+
+        .vb-footer-links a:hover {
+            text-decoration: underline
+        }
+
+/* ====== Full-bleed helper (para salir del .container del layout) ====== */
+.full-bleed {
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    width: 100vw;
+}
+
+/* ====== HERO ====== */
+.vb-hero {
+    background: #f6f4f2 url("/img/hero.jpg") center right / cover no-repeat;
+    min-height: 420px;
+    padding: clamp(56px, 12vh, 140px) 0;
+}
+
+@media (min-width: 768px) {
+    .vb-hero {
+        min-height: 520px;
+    }
+}
+
+.vb-hero h1 {
+    font-weight: 600;
+    letter-spacing: .4px;
+    font-size: clamp(28px, 4vw, 44px);
+    color: #222;
+}
+
+.vb-hero .vb-cta {
+    margin-top: 16px;
+}

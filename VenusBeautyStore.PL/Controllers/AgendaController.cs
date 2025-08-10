@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using VenusBeautyStore.PL.Models;
 using VenusBeauty.BLL.Services;
 using VenusBeauty.DAL.Entities;
-using Microsoft.AspNetCore.Identity;
+
 
 namespace VenusBeautyStore.PL.Controllers
 {
