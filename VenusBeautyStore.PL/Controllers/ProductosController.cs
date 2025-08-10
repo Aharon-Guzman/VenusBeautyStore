@@ -129,25 +129,6 @@ namespace VenusBeautyStore.PL.Controllers
             return View(producto);
         }
 
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var prodDb = await _productoService.ObtenerPorIdAsync(id);
-        //    if (prodDb == null)
-        //        return NotFound();
-
-        //    // 🗑️ Eliminar la imagen asociada si existe
-        //    if (!string.IsNullOrEmpty(prodDb.ImagenUrl))
-        //    {
-        //        string filePath = Path.Combine(_webHostEnvironment.WebRootPath, prodDb.ImagenUrl.TrimStart('/'));
-        //        if (System.IO.File.Exists(filePath))
-        //            System.IO.File.Delete(filePath);
-        //    }
-
-        //    await _productoService.EliminarProductoAsync(id);
-        //    return RedirectToAction(nameof(Index));
-        //}
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
