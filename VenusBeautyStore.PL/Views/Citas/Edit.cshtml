@@ -1,0 +1,25 @@
+﻿@model VenusBeautyStore.PL.Models.CitaEditEstadoViewModel
+@{
+    ViewData["Title"] = "Actualizar estado de cita";
+}
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="IdCita" />
+
+    <div class="mb-3">
+        <label asp-for="Estado" class="form-label"></label>
+        <select asp-for="Estado" class="form-select"
+                asp-items="Html.GetEnumSelectList<VenusBeauty.DAL.Entities.EstadoCita>()">
+        </select>
+        <span asp-validation-for="Estado" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+
+}

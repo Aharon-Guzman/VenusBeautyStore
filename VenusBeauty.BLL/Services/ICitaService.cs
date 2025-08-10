@@ -22,5 +22,7 @@ namespace VenusBeauty.BLL.Services
 
         Task<bool> ActualizarEstadoAsync(int idCita, EstadoCita nuevoEstado);
         Task<bool> CancelarCitaAsync(int idCita);
+        Task<bool> EliminarCitaAsync(int idCita);
+
     }
 }

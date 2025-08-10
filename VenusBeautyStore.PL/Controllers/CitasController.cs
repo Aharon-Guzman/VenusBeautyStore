@@ -120,56 +120,6 @@ namespace VenusBeautyStore.PL.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CitaCreateViewModel vm)
-        //{
-        //    /* Validación: al menos un servicio seleccionado */
-        //    if (vm.ServiciosSeleccionados == null || !vm.ServiciosSeleccionados.Any())
-        //        ModelState.AddModelError(nameof(vm.ServiciosSeleccionados),
-        //                                 "Seleccione al menos un servicio.");
-        //    if (vm.FechaHora < DateTime.Now)
-        //    {
-        //        ModelState.AddModelError(nameof(vm.FechaHora),
-        //            "No puede reservar una cita en el pasado.");
-        //    }
-        //    if (!ModelState.IsValid)
-        //    {
-        //        /* Recarga listas para redisplay */
-        //        vm.Trabajadores = (await _trabajadorService.ObtenerTrabajadoresAsync())
-        //            .Select(t => new SelectListItem($"{t.Nombre} {t.Apellido}", t.UserId));
-
-        //        vm.Servicios = (await _servicioService.ObtenerServiciosAsync())
-        //            .Select(s => new SelectListItem(s.Nombre, s.IdServicio.ToString()));
-
-        //        vm.Productos = (await _productoService.ObtenerProductosAsync())
-        //            .Select(p => new SelectListItem(p.Nombre, p.IdProducto.ToString()));
-
-        //        if (User.IsInRole("Admin") || User.IsInRole("Recepcionista"))
-        //        {
-        //            vm.Clientes = (await _clienteService.ObtenerClientesAsync())
-        //                .Select(c => new SelectListItem($"{c.Nombre} {c.Apellido1} {c.Apellido2}".Trim(),
-        //                                                c.IdCliente.ToString()));
-        //        }
-
-        //        return View(vm);
-        //    }
-
-
-
-        //    /* Productos marcados y cantidad > 0 */
-        //    var productosFiltrados = vm.ProductosSeleccionados?
-        //        .Where(kvp => kvp.Value > 0)
-        //        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-        //    /* Guarda la cita */
-        //    await _citaService.CrearCitaAsync(
-        //        vm.IdCliente,
-        //        vm.IdUsuario,
-        //        vm.FechaHora,
-        //        vm.ServiciosSeleccionados,
-        //        productosFiltrados);
-
-        //    TempData["Success"] = "Cita registrada correctamente.";
-        //    return RedirectToAction(nameof(Index));
-        //}
         {
             // Validación: al menos un servicio seleccionado
             if (vm.ServiciosSeleccionados == null || !vm.ServiciosSeleccionados.Any())
@@ -235,5 +185,103 @@ namespace VenusBeautyStore.PL.Controllers
                         c.IdCliente.ToString()));
             }
         }
+        // GET: /Citas/Edit/5
+        [Authorize(Roles = "Admin,Recepcionista")]
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var cita = await _citaService.ObtenerCitaAsync(id);
+            if (cita is null) return NotFound();
+
+            var vm = new CitaEditEstadoViewModel
+            {
+                IdCita = cita.IdCita,
+                Estado = cita.Estado
+            };
+
+            return View(vm);
+        }
+        // POST: /Citas/Edit
+        [Authorize(Roles = "Admin,Recepcionista")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(VenusBeautyStore.PL.Models.CitaEditEstadoViewModel vm)
+        {
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            try
+            {
+                var ok = await _citaService.ActualizarEstadoAsync(vm.IdCita, vm.Estado);
+                if (!ok) return NotFound();
+
+                TempData["Success"] = "Estado actualizado correctamente.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(vm);
+            }
+        }
+        // GET: /Citas/Delete/5
+        [Authorize(Roles = "Admin,Recepcionista")]
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var cita = await _citaService.ObtenerCitaAsync(id);
+            if (cita is null) return NotFound();
+
+            var vm = new CitaDeleteViewModel
+            {
+                IdCita = cita.IdCita,
+                Cliente = cita.Cliente != null
+                            ? $"{cita.Cliente.Nombre} {cita.Cliente.Apellido1} {cita.Cliente.Apellido2}".Trim()
+                            : $"Cliente #{cita.IdCliente}",
+                Estilista = cita.Trabajador != null
+                            ? $"{cita.Trabajador.Nombre} {cita.Trabajador.Apellido}".Trim()
+                            : "(sin estilista)",
+                FechaHora = cita.FechaHora,
+                Estado = cita.Estado
+            };
+
+            return View(vm);
+        }
+        [Authorize(Roles = "Admin,Recepcionista")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(VenusBeautyStore.PL.Models.CitaDeleteViewModel vm)
+        {
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            try
+            {
+                var ok = await _citaService.EliminarCitaAsync(vm.IdCita);
+                if (!ok) return NotFound();
+
+                TempData["Success"] = "Cita eliminada correctamente.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Regla de negocio (p.ej. no eliminar Completada)
+                ModelState.AddModelError(string.Empty, ex.Message);
+
+                // Recargar datos de la cita para volver a mostrar el resumen en la vista
+                var cita = await _citaService.ObtenerCitaAsync(vm.IdCita);
+                if (cita != null)
+                {
+                    vm.Cliente = cita.Cliente != null ? $"{cita.Cliente.Nombre} {cita.Cliente.Apellido1} {cita.Cliente.Apellido2}".Trim() : $"Cliente #{cita.IdCliente}";
+                    vm.Estilista = cita.Trabajador != null ? $"{cita.Trabajador.Nombre} {cita.Trabajador.Apellido}".Trim() : "(sin estilista)";
+                    vm.FechaHora = cita.FechaHora;
+                    vm.Estado = cita.Estado;
+                }
+
+                return View(vm);
+            }
+        }
+
+
     }
 }

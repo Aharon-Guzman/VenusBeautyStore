@@ -1,0 +1,41 @@
+﻿@model VenusBeautyStore.PL.Models.CitaDeleteViewModel
+@{
+    ViewData["Title"] = "Eliminar cita";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="alert alert-warning">
+    <strong>Atención:</strong> Esta acción eliminará la cita y sus detalles asociados.
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <p><strong>Cita:</strong> @Model.Resumen</p>
+        <p><strong>Cliente:</strong> @Model.Cliente</p>
+        <p><strong>Estilista:</strong> @Model.Estilista</p>
+        <p><strong>Fecha y hora:</strong> @Model.FechaHora.ToString("g")</p>
+        <p><strong>Estado:</strong> @Model.Estado</p>
+    </div>
+</div>
+
+@if (Model.Estado == VenusBeauty.DAL.Entities.EstadoCita.Completada)
+{
+    <div class="alert alert-danger">
+        No se permite eliminar citas en estado <strong>Completada</strong>.
+    </div>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+}
+else
+{
+    <form asp-action="Delete" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="IdCita" />
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Cancelar</a>
+    </form>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
