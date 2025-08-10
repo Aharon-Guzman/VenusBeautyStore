@@ -1,0 +1,42 @@
+﻿@using VenusBeauty.DAL.Entities
+@model IEnumerable<Producto>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-light border text-center" role="alert">
+        Aún no hay productos para mostrar.
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+        @foreach (var p in Model)
+        {
+            var img = string.IsNullOrWhiteSpace(p.ImagenUrl)
+            ? Url.Content("~/img/placeholder-product.jpg")
+            : p.ImagenUrl;
+
+            <div class="col">
+                <div class="card vb-product-card h-100">
+                    <div class="vb-card-img-wrap">
+                        <img class="vb-card-img" src="@img" alt="@p.Nombre" />
+                    </div>
+
+                    <div class="card-body">
+                        <h3 class="vb-product-title">@p.Nombre</h3>
+                        @if (!string.IsNullOrWhiteSpace(p.Descripcion))
+                        {
+                            <p class="vb-product-desc">@p.Descripcion</p>
+                        }
+                        <div class="d-flex align-items-center justify-content-between mt-2">
+                            <span class="vb-price">@p.Precio.ToString("C")</span>
+                            <a class="btn btn-sm vb-btn-dark" asp-controller="Home" asp-action="Productos">
+                                Ver
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

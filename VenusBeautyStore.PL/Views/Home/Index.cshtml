@@ -71,6 +71,34 @@
     </div>
 </section>
 
+<!-- Nuestros productos (dinámico) -->
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 vb-products-grid">
+    @foreach (var p in Model)
+    {
+        <div class="col">
+            <article class="vb-card h-100 d-flex flex-column">
+                <div class="vb-thumb">
+                    <img src="@(string.IsNullOrWhiteSpace(p.ImagenUrl) ? Url.Content("~/img/placeholder-product.jpg") : p.ImagenUrl)"
+                         alt="@p.Nombre" />
+                </div>
+
+                <div class="vb-body">
+                    <h3 class="vb-title">@p.Nombre</h3>
+                    <p class="vb-desc">@p.Descripcion</p>
+                </div>
+
+                <div class="vb-meta mt-auto">
+                    <div class="vb-price">@p.Precio.ToString("C")</div>
+                    <a class="btn vb-btn-dark vb-cta">Ver</a>
+                </div>
+            </article>
+        </div>
+    }
+</div>
+
+<div class="text-center mt-3">
+    <a asp-controller="Productos" asp-action="PublicIndex" class="btn vb-btn-dark">Ver todos</a>
+</div>
 
 
 
