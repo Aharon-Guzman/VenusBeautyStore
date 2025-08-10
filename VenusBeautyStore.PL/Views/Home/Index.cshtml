@@ -1,6 +1,9 @@
-﻿@{
+﻿@using VenusBeautyStore.PL.Models
+@model HomeIndexVM
+@{
     ViewData["Title"] = "Inicio";
 }
+
 
 <section class="vb-hero full-bleed d-flex align-items-center">
     <div class="container-xl text-center">
@@ -18,7 +21,7 @@
 
 
 <!-- Servicios Destacados -->
-<section class="vb-section" id="servicios">
+<section class="vb-section"@*  id="servicios" *@>
     <div class="container-xl text-center">
         <h2 class="vb-section-title mb-4">Servicios destacados</h2>
 
@@ -71,6 +74,7 @@
     </div>
 </section>
 
+@* <section class="vb-section" id="productos">
 <!-- Nuestros productos (dinámico) -->
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 vb-products-grid">
     @foreach (var p in Model)
@@ -99,11 +103,27 @@
 <div class="text-center mt-3">
     <a asp-controller="Productos" asp-action="PublicIndex" class="btn vb-btn-dark">Ver todos</a>
 </div>
+</section> *@
+
+<!-- …tu hero y “Servicios destacados” estático… -->
+<!-- Nuestros productos (dinámico) -->
+<section class="vb-section" id="productos">
+    <div class="container-xl">
+        <h2 class="vb-section-title mb-4">Nuestros productos</h2>
+        @await Html.PartialAsync("_ProductosGrid", Model.Productos)
+    </div>
+</section>
+
+<!-- Nuestros servicios (dinámico) -->
+<section class="vb-section" id="servicios">
+    <div class="container-xl">
+        <h2 class="vb-section-title mb-4">Nuestros servicios</h2>
+        @await Html.PartialAsync("_ServiciosGrid", Model.Servicios)
+    </div>
+</section>
 
 
-
-
-
-<!-- Opcional: anclas que usaremos luego para el scroll del menú -->
+@* <!-- Opcional: anclas que usaremos luego para el scroll del menú -->
 <section id="servicios" class="py-5"></section>
 <section id="productos" class="py-5"></section>
+ *@

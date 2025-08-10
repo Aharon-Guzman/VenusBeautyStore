@@ -28,12 +28,17 @@ else
                         {
                             <p class="vb-product-desc">@p.Descripcion</p>
                         }
-                        <div class="d-flex align-items-center justify-content-between mt-2">
+@*                         <div class="d-flex align-items-center justify-content-between mt-auto">
                             <span class="vb-price">@p.Precio.ToString("C")</span>
                             <a class="btn btn-sm vb-btn-dark" asp-controller="Home" asp-action="Productos">
                                 Ver
                             </a>
+                        </div> *@
+                        <div class="vb-card-actions">
+                            <span class="vb-price">@p.Precio.ToString("C")</span>
+                            <a class="btn btn-sm vb-btn-dark" asp-controller="Home" asp-action="Productos">Ver</a>
                         </div>
+
                     </div>
                 </div>
             </div>

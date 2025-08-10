@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="~/VenusBeautyStore.PL.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header class="vb-navbar">
+@*     <header class="vb-navbar">
         <nav class="container-xl d-flex align-items-center">
             <a class="vb-brand text-decoration-none me-4"
                asp-area="" asp-controller="Home" asp-action="Index">
@@ -38,7 +38,74 @@
                 }
             </div>
         </nav>
+    </header> *@
+
+
+
+    <header class="vb-navbar">
+        <nav class="container-xl d-flex align-items-center">
+            <a class="vb-brand text-decoration-none me-4"
+               asp-area="" asp-controller="Home" asp-action="Index">
+                Venus Beauty
+            </a>
+
+            @* --- NAV PÚBLICO / CLIENTE: usa anclas para scroll --- *@
+            @if (!(User?.Identity?.IsAuthenticated ?? false) || User.IsInRole("Cliente"))
+            {
+                <ul class="vb-nav list-unstyled d-flex mb-0">
+                    <li><a asp-controller="Home" asp-action="Index" asp-fragment="servicios">Servicios</a></li>
+                    <li><a asp-controller="Home" asp-action="Index" asp-fragment="productos">Productos</a></li>
+                    <li>
+                        @if (User?.Identity?.IsAuthenticated ?? false)
+                        {
+                            <a asp-controller="Citas" asp-action="Create">Reserva</a>
+                        }
+                        else
+                        {
+                            <a asp-area="Identity" asp-page="/Account/Login"
+                               asp-route-ReturnUrl="@Url.Action("Create", "Citas")">Reserva</a>
+                        }
+                    </li>
+                    <li><a asp-controller="Home" asp-action="Privacy">Acerca de</a></li>
+                    <li><a asp-controller="Home" asp-action="Privacy">Contacto</a></li>
+                </ul>
+            }
+            @* --- NAV BACKOFFICE: Admin / Recepcionista --- *@
+            else if (User.IsInRole("Admin") || User.IsInRole("Recepcionista"))
+            {
+                <ul class="vb-nav list-unstyled d-flex mb-0">
+                    <li><a asp-controller="Clientes" asp-action="Index">Clientes</a></li>
+                    <li><a asp-controller="Productos" asp-action="Index">Productos</a></li>
+                    <li><a asp-controller="Servicios" asp-action="Index">Servicios</a></li>
+                    <li><a asp-controller="UsuariosInternos" asp-action="Index">Personal</a></li>
+                    <li><a asp-controller="Citas" asp-action="Index">Citas</a></li>
+                    <li><a asp-controller="Agenda" asp-action="Index">Agenda</a></li>
+                </ul>
+            }
+            @* --- NAV ESTILISTA (si lo usas) --- *@
+            else if (User.IsInRole("Estilista"))
+            {
+                <ul class="vb-nav list-unstyled d-flex mb-0">
+                    <li><a asp-controller="Agenda" asp-action="Index">Agenda</a></li>
+                    <li><a asp-controller="Citas" asp-action="Index">Citas</a></li>
+                </ul>
+            }
+
+            <div class="ms-auto">
+                @if (!(User?.Identity?.IsAuthenticated ?? false))
+                {
+                    <a class="btn vb-btn-dark" asp-area="Identity" asp-page="/Account/Login">Iniciar Sesión</a>
+                }
+                else
+                {
+                    <partial name="_LoginPartial" />
+                }
+            </div>
+        </nav>
     </header>
+
+
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

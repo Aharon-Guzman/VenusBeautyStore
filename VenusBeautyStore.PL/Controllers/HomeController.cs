@@ -46,27 +46,39 @@ namespace VenusBeautyStore.PL.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IProductoService _productoService;
+        private readonly IServicioService _servicioService;
 
-        public HomeController(ILogger<HomeController> logger, IProductoService productoService)
+        public HomeController(ILogger<HomeController> logger, IProductoService productoService, IServicioService servicioService)
         {
             _logger = logger;
             _productoService = productoService;
+            _servicioService = servicioService;
         }
 
         // Home con “Productos destacados”
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var productos = await _productoService.ObtenerProductosAsync();
+            //var productos = await _productoService.ObtenerProductosAsync();
 
-            var destacados = productos
-                .Where(p => p.Activo && !string.IsNullOrWhiteSpace(p.ImagenUrl))
-                .OrderByDescending(p => p.IdProducto)
-                .Take(6)
-                .ToList();
+            //var destacados = productos
+            //    .Where(p => p.Activo && !string.IsNullOrWhiteSpace(p.ImagenUrl))
+            //    .OrderByDescending(p => p.IdProducto)
+            //    .Take(6)
+            //    .ToList();
 
-            // La vista Index recibirá IEnumerable<Producto>
-            return View(destacados);
+            //// La vista Index recibirá IEnumerable<Producto>
+            //return View(destacados);
+            var vm = new HomeIndexVM
+            {
+                Productos = (await _productoService.ObtenerProductosAsync())
+                          .Where(p => p.Activo).Take(9).ToList(),
+                Servicios = (await _servicioService.ObtenerServiciosAsync())
+                          //.Where(s => s.Activo) // si tu entidad lo tiene
+                          .Take(6).ToList()
+            };
+
+            return View(vm);
         }
 
         // (Para después) Página con todos los productos activos
