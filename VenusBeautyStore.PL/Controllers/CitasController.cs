@@ -75,21 +75,59 @@ namespace VenusBeautyStore.PL.Controllers
 
         /* ---------- FORMULARIO CREATE (GET) ---------- */
         // GET: /Citas/Create
-        public async Task<IActionResult> Create()
+        //public async Task<IActionResult> Create()
+        //{
+        //    var vm = new CitaCreateViewModel
+        //    {
+        //        Trabajadores = (await _trabajadorService.ObtenerEstilistasActivosAsync())
+        //             .Select(t => new SelectListItem($"{t.Nombre} {t.Apellido}", t.UserId)),
+
+
+        //        Servicios = (await _servicioService.ObtenerServiciosActivosAsync())
+        //             .Select(s => new SelectListItem(s.Nombre, s.IdServicio.ToString())),
+
+
+        //        Productos = (await _productoService.ObtenerProductosActivosAsync())
+        //            .Select(p => new SelectListItem(p.Nombre, p.IdProducto.ToString()))
+
+        //    };
+
+        //    if (User.IsInRole("Admin") || User.IsInRole("Recepcionista"))
+        //    {
+        //        vm.Clientes = (await _clienteService.ObtenerClientesAsync())
+        //            .Select(c => new SelectListItem(
+        //                $"{c.Nombre} {c.Apellido1} {c.Apellido2}".Trim(),
+        //                c.IdCliente.ToString()));
+        //    }
+        //    else // Rol Cliente
+        //    {
+        //        var userId = _userManager.GetUserId(User)!;
+        //        var cliente = (await _clienteService.ObtenerClientesAsync())
+        //                      .FirstOrDefault(c => c.UserId == userId);
+
+        //        if (cliente is null) return Forbid();
+
+        //        vm.IdCliente = cliente.IdCliente;
+        //    }
+
+        //    //vm.FechaHora = DateTime.Now.AddHours(1);
+        //    var ahora = DateTime.Now.AddHours(1);
+        //    vm.FechaHora = new DateTime(ahora.Year, ahora.Month, ahora.Day, ahora.Hour, ahora.Minute, 0);
+        //    return View(vm);
+        //}
+
+        public async Task<IActionResult> Create(int? idServicio = null, int? idProducto = null, int cantidad = 1)
         {
             var vm = new CitaCreateViewModel
             {
                 Trabajadores = (await _trabajadorService.ObtenerEstilistasActivosAsync())
                      .Select(t => new SelectListItem($"{t.Nombre} {t.Apellido}", t.UserId)),
 
-
                 Servicios = (await _servicioService.ObtenerServiciosActivosAsync())
                      .Select(s => new SelectListItem(s.Nombre, s.IdServicio.ToString())),
 
-
                 Productos = (await _productoService.ObtenerProductosActivosAsync())
                     .Select(p => new SelectListItem(p.Nombre, p.IdProducto.ToString()))
-
             };
 
             if (User.IsInRole("Admin") || User.IsInRole("Recepcionista"))
@@ -104,35 +142,55 @@ namespace VenusBeautyStore.PL.Controllers
                 var userId = _userManager.GetUserId(User)!;
                 var cliente = (await _clienteService.ObtenerClientesAsync())
                               .FirstOrDefault(c => c.UserId == userId);
-
                 if (cliente is null) return Forbid();
-
                 vm.IdCliente = cliente.IdCliente;
             }
 
-            //vm.FechaHora = DateTime.Now.AddHours(1);
             var ahora = DateTime.Now.AddHours(1);
             vm.FechaHora = new DateTime(ahora.Year, ahora.Month, ahora.Day, ahora.Hour, ahora.Minute, 0);
+
+            // 👉 Guardamos los “pendientes” para usarlos en la vista y luego en el POST
+            ViewBag.IdServicioPendiente = idServicio;
+            ViewBag.IdProductoPendiente = idProducto;
+            ViewBag.CantidadPendiente = cantidad;
+
+            // 👉 (opcional) marcar el servicio pendiente en los checkboxes
+            if (idServicio.HasValue)
+                vm.ServiciosSeleccionados = new List<int> { idServicio.Value };
+
             return View(vm);
         }
+
 
         /* ---------- FORMULARIO CREATE (POST) ---------- */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CitaCreateViewModel vm)
         {
-            // Validación: al menos un servicio seleccionado
-            if (vm.ServiciosSeleccionados == null || !vm.ServiciosSeleccionados.Any())
+            // 🔸 Leer pendientes que vienen como hidden del formulario
+            int? idServPend = null;
+            int? idProdPend = null;
+            int cantPend = 1;
+            if (int.TryParse(Request.Form["idServicioPendiente"], out var sId)) idServPend = sId;
+            if (int.TryParse(Request.Form["idProductoPendiente"], out var pId)) idProdPend = pId;
+            if (int.TryParse(Request.Form["cantidadPendiente"], out var qty)) cantPend = Math.Max(1, qty);
+
+            // 🔸 Si NO hay servicios marcados pero SÍ hay servicio pendiente, lo agregamos aquí
+            if ((vm.ServiciosSeleccionados == null || !vm.ServiciosSeleccionados.Any()) && idServPend.HasValue)
             {
-                ModelState.AddModelError(nameof(vm.ServiciosSeleccionados),
-                                         "Seleccione al menos un servicio.");
+                vm.ServiciosSeleccionados = new List<int> { idServPend.Value };
             }
 
-            // Validar que no sea en el pasado
+            // ❗ Si sigues sin ningún servicio (y solo hay producto pendiente), bloquear (tu BLL exige al menos un servicio)
+            if (vm.ServiciosSeleccionados == null || !vm.ServiciosSeleccionados.Any())
+            {
+                ModelState.AddModelError(nameof(vm.ServiciosSeleccionados), "Seleccione al menos un servicio.");
+            }
+
+            // Validación de fecha (como ya tenías)
             if (vm.FechaHora < DateTime.Now)
             {
-                ModelState.AddModelError(nameof(vm.FechaHora),
-                                         "No puede reservar una cita en el pasado.");
+                ModelState.AddModelError(nameof(vm.FechaHora), "No puede reservar una cita en el pasado.");
             }
 
             if (!ModelState.IsValid)
@@ -147,24 +205,81 @@ namespace VenusBeautyStore.PL.Controllers
                     .Where(kvp => kvp.Value > 0)
                     .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-                await _citaService.CrearCitaAsync(
+                // ✅ Crear cita (ya trae el servicio pendiente si existía)
+                var nuevaCitaId = await _citaService.CrearCitaAsync(
                     vm.IdCliente,
                     vm.IdUsuario,
                     vm.FechaHora,
                     vm.ServiciosSeleccionados,
                     productosFiltrados);
 
-                TempData["Success"] = "Cita registrada correctamente.";
-                return RedirectToAction(nameof(Index));
+                // Si además había PRODUCTO pendiente, ahora lo añadimos y vamos a MiCarrito
+                if (idProdPend.HasValue)
+                {
+                    var userId = _userManager.GetUserId(User)!;
+                    await _citaService.AgregarProductoAsync(nuevaCitaId, idProdPend.Value, cantPend, userId);
+                }
+
+                // Ir al carrito de la nueva cita
+                return RedirectToAction(nameof(MiCarrito), new { id = nuevaCitaId });
             }
             catch (InvalidOperationException ex)
             {
-                // ⚠️ Si hay solapamiento u otro error de negocio
                 ModelState.AddModelError(string.Empty, ex.Message);
                 await CargarListas(vm);
                 return View(vm);
             }
         }
+
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create(CitaCreateViewModel vm)
+        //{
+        //    // Validación: al menos un servicio seleccionado
+        //    if (vm.ServiciosSeleccionados == null || !vm.ServiciosSeleccionados.Any())
+        //    {
+        //        ModelState.AddModelError(nameof(vm.ServiciosSeleccionados),
+        //                                 "Seleccione al menos un servicio.");
+        //    }
+
+        //    // Validar que no sea en el pasado
+        //    if (vm.FechaHora < DateTime.Now)
+        //    {
+        //        ModelState.AddModelError(nameof(vm.FechaHora),
+        //                                 "No puede reservar una cita en el pasado.");
+        //    }
+
+        //    if (!ModelState.IsValid)
+        //    {
+        //        await CargarListas(vm);
+        //        return View(vm);
+        //    }
+
+        //    try
+        //    {
+        //        var productosFiltrados = vm.ProductosSeleccionados?
+        //            .Where(kvp => kvp.Value > 0)
+        //            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+        //        await _citaService.CrearCitaAsync(
+        //            vm.IdCliente,
+        //            vm.IdUsuario,
+        //            vm.FechaHora,
+        //            vm.ServiciosSeleccionados,
+        //            productosFiltrados);
+
+        //        TempData["Success"] = "Cita registrada correctamente.";
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    catch (InvalidOperationException ex)
+        //    {
+        //        // ⚠️ Si hay solapamiento u otro error de negocio
+        //        ModelState.AddModelError(string.Empty, ex.Message);
+        //        await CargarListas(vm);
+        //        return View(vm);
+        //    }
+        //}
 
         private async Task CargarListas(CitaCreateViewModel vm)
         {
@@ -373,7 +488,20 @@ namespace VenusBeautyStore.PL.Controllers
             return View(vm);
         }
 
+        [Authorize]
+        public async Task<IActionResult> MiCarritoActual()
+        {
+            var userId = _userManager.GetUserId(User)!;
 
+            var abierta = (await _citaService.ObtenerCitasDelClienteAsync(userId, soloAbiertas: true))
+                          .FirstOrDefault();
+            if (abierta == null)
+            {
+                TempData["Info"] = "No tienes una cita abierta. Crea una nueva para empezar.";
+                return RedirectToAction(nameof(Create));
+            }
+            return RedirectToAction(nameof(MiCarrito), new { id = abierta.IdCita });
+        }
 
     }
 }

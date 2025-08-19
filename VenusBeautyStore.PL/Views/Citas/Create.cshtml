@@ -1,4 +1,4 @@
-﻿@model VenusBeautyStore.PL.Models.CitaCreateViewModel
+﻿@* @model VenusBeautyStore.PL.Models.CitaCreateViewModel
 @{
     ViewData["Title"] = "Nueva Cita";
 }
@@ -91,6 +91,117 @@
         document.querySelectorAll('input[type=checkbox][data-target]').forEach(cb => {
             cb.addEventListener('change', () => {
                 const qty = document.getElementById(cb.dataset.target);
+                qty.disabled = !cb.checked;
+                if (!cb.checked) qty.value = 1;
+            });
+        });
+    </script>
+}
+ *@
+
+@model VenusBeautyStore.PL.Models.CitaCreateViewModel
+@{
+    ViewData["Title"] = "Nueva Cita";
+}
+
+<h2>Registrar Nueva Cita</h2>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form asp-action="Create" method="post">
+
+    <!-- 🔒 Pendientes para el carrito (se postean al guardar) -->
+    <input type="hidden" name="idServicioPendiente" value="@(ViewBag.IdServicioPendiente ?? "")" />
+    <input type="hidden" name="idProductoPendiente" value="@(ViewBag.IdProductoPendiente ?? "")" />
+    <input type="hidden" name="cantidadPendiente" value="@(ViewBag.CantidadPendiente ?? 1)" />
+
+    <!-- ▸ Cliente: solo Recepcionista / Admin -->
+    @if (Model.Clientes != null)
+    {
+        <div class="mb-3">
+            <label asp-for="IdCliente" class="form-label">Cliente</label>
+            <select asp-for="IdCliente" asp-items="Model.Clientes" class="form-select"></select>
+            <span asp-validation-for="IdCliente" class="text-danger"></span>
+        </div>
+    }
+    else
+    {
+        <input type="hidden" asp-for="IdCliente" />
+    }
+
+    <!-- ▸ Estilista -->
+    <div class="mb-3">
+        <label asp-for="IdUsuario" class="form-label">Estilista</label>
+        <select asp-for="IdUsuario" asp-items="Model.Trabajadores" class="form-select"></select>
+        <span asp-validation-for="IdUsuario" class="text-danger"></span>
+    </div>
+
+    <!-- ▸ Fecha y hora -->
+    <div class="mb-3">
+        <label asp-for="FechaHora" class="form-label">Fecha y hora</label>
+        <input asp-for="FechaHora" type="datetime-local" class="form-control"
+               value="@Model.FechaHora.ToString("yyyy-MM-ddTHH:mm")"
+               min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+        <span asp-validation-for="FechaHora" class="text-danger"></span>
+    </div>
+
+    <!-- ▸ Servicios (checkbox list) -->
+    <div class="mb-3">
+        <label class="form-label">Servicios</label><br />
+        @foreach (var s in Model.Servicios!)
+        {
+            var id = int.Parse(s.Value);
+            var marcado = Model.ServiciosSeleccionados != null && Model.ServiciosSeleccionados.Contains(id);
+
+            <div class="form-check form-check-inline">
+                <input class="form-check-input"
+                       type="checkbox"
+                       name="ServiciosSeleccionados"
+                       value="@s.Value"
+                       id="srv_@s.Value"
+                       @(marcado ? "checked" : null) />
+                <label class="form-check-label" for="srv_@s.Value">@s.Text</label>
+            </div>
+        }
+        <span asp-validation-for="ServiciosSeleccionados" class="text-danger d-block"></span>
+    </div>
+
+    <!-- ▸ Productos (checkbox + cantidad) -->
+    <div class="mb-3">
+        <label class="form-label">Productos (opcional)</label>
+        @foreach (var p in Model.Productos!)
+        {
+            <div class="input-group mb-2">
+                <div class="input-group-text">
+                    <input class="form-check-input mt-0"
+                           type="checkbox"
+                           id="chk_@p.Value"
+                           data-target="qty_@p.Value" />
+                </div>
+                <span class="input-group-text flex-grow-1">@p.Text</span>
+                <input type="number"
+                       class="form-control"
+                       id="qty_@p.Value"
+                       name="ProductosSeleccionados[@p.Value]"
+                       min="1"
+                       value="1"
+                       disabled />
+            </div>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Habilita / deshabilita la cantidad cuando se marca el checkbox
+        document.querySelectorAll('input[type=checkbox][data-target]').forEach(cb => {
+            const qty = document.getElementById(cb.dataset.target);
+            qty.disabled = !cb.checked;             // inicial
+            cb.addEventListener('change', () => {
                 qty.disabled = !cb.checked;
                 if (!cb.checked) qty.value = 1;
             });

@@ -11,7 +11,15 @@
 @if (!Model.Any())
 {
     <div class="alert alert-info">No tienes citas abiertas. Crea una nueva para poder reservar.</div>
-    <a class="btn btn-primary" asp-controller="Citas" asp-action="Create">Crear nueva cita</a>
+    <a class="btn btn-primary"
+       asp-controller="Citas"
+       asp-action="Create"
+       asp-route-idServicio="@(idServicio ?? null)"
+       asp-route-idProducto="@(idProducto ?? null)"
+       asp-route-cantidad="@cantidad">
+        Crear nueva cita
+    </a>
+
 }
 else
 {
