@@ -30,9 +30,14 @@ else
                         }
 
                         <div class="mt-auto d-flex align-items-center justify-content-between">
-                            @* si tienes precio/duración, muéstralos *@
+                            @* si tienes precio/duración, descomenta: *@
                             @* <span class="vb-price">@s.Precio.ToString("C")</span> *@
-                            <a class="btn btn-sm vb-btn-dark" asp-controller="Home" asp-action="Servicios">
+
+                            <a class="btn btn-sm vb-btn-dark"
+                               asp-controller="Servicios"
+                               asp-action="Catalogo"
+                               asp-route-idServicio="@s.IdServicio"
+                               asp-fragment="svc-@s.IdServicio">
                                 Ver
                             </a>
                         </div>

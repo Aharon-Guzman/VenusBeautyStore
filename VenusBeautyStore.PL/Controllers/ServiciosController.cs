@@ -130,26 +130,6 @@ namespace VenusBeautyStore.PL.Controllers
             return View(servicio);
         }
 
-        //// ✅ Confirmar y eliminar servicio (y su imagen)
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var servDb = await _servicioService.ObtenerPorIdAsync(id);
-        //    if (servDb == null)
-        //        return NotFound();
-
-        //    // 🗑️ Eliminar la imagen asociada si existe
-        //    if (!string.IsNullOrEmpty(servDb.ImagenUrl))
-        //    {
-        //        string filePath = Path.Combine(_webHostEnvironment.WebRootPath, servDb.ImagenUrl.TrimStart('/'));
-        //        if (System.IO.File.Exists(filePath))
-        //            System.IO.File.Delete(filePath);
-        //    }
-
-        //    await _servicioService.EliminarServicioAsync(id);
-        //    return RedirectToAction(nameof(Index));
-        //}
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -176,6 +156,26 @@ namespace VenusBeautyStore.PL.Controllers
 
             TempData["Success"] = "El servicio fue eliminado correctamente.";
             return RedirectToAction(nameof(Index));
+        }
+        //[AllowAnonymous]
+        //public async Task<IActionResult> Catalogo()
+        //{
+        //    var servicios = await _servicioService.ObtenerServiciosAsync();
+        //    return View(servicios);
+        //}
+
+        // Catálogo público con soporte de anclaje a un servicio concreto
+        [AllowAnonymous]
+        public async Task<IActionResult> Catalogo(string? q, int? idServicio)
+        {
+            var servicios = await _servicioService.ObtenerServiciosAsync(); // usa tu método actual
+
+            if (!string.IsNullOrWhiteSpace(q))
+                servicios = servicios.Where(s => s.Nombre.Contains(q, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            ViewBag.Q = q;
+            ViewBag.TargetServicioId = idServicio;   // para la vista (scroll y highlight)
+            return View(servicios);
         }
 
 
