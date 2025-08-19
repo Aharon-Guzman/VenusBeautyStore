@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿@* @using Microsoft.AspNetCore.Identity
 @using VenusBeauty.DAL.Entities;
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -25,3 +25,55 @@ else
     </li>
 }
 </ul>
+ *@
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@using VenusBeauty.DAL.Entities
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    var user = await UserManager.GetUserAsync(User);
+
+    // Armar nombre para mostrar
+    string displayName = null;
+
+    var t = user?.GetType();
+    var nombre = t?.GetProperty("Nombre")?.GetValue(user)?.ToString();
+    var apellido = (t?.GetProperty("Apellido")?.GetValue(user)
+                    ?? t?.GetProperty("Apellido1")?.GetValue(user))?.ToString();
+
+    if (!string.IsNullOrWhiteSpace(nombre) || !string.IsNullOrWhiteSpace(apellido))
+    {
+        displayName = $"{nombre} {apellido}".Trim();
+    }
+
+    if (string.IsNullOrWhiteSpace(displayName))
+    {
+        displayName = User.FindFirstValue("given_name")
+                       ?? User.FindFirstValue("name")
+                       ?? user?.UserName
+                       ?? user?.Email
+                       ?? "usuario";
+
+        if (displayName?.Contains('@') == true)
+            displayName = displayName.Split('@')[0];
+    }
+
+    <div class="d-flex align-items-center gap-3">
+        <span>Hola @displayName</span>
+
+        <form class="m-0"
+              asp-area="Identity"
+              asp-page="/Account/Logout"
+              asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })"
+              method="post">
+            <button type="submit" class="btn vb-btn-dark">Salir</button>
+        </form>
+    </div>
+}
+else
+{
+    <a class="btn vb-btn-dark" asp-area="Identity" asp-page="/Account/Login">Iniciar Sesión</a>
+}

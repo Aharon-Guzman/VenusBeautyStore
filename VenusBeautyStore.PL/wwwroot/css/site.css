@@ -407,3 +407,13 @@ main {
     text-shadow: 0 2px 10px rgba(0,0,0,.35);
     pointer-events: none;
 }
+.vb-nav {
+    gap: 2rem;
+    flex-wrap: nowrap;
+}
+
+    .vb-nav .nav-link, .vb-nav > li > a {
+        display: block;
+        padding: .5rem 0;
+        white-space: nowrap;
+    }

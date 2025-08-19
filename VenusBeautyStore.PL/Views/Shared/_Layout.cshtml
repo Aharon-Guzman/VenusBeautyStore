@@ -25,80 +25,66 @@
                 var isAdmin = User.IsInRole("Admin");
                 var isRecep = User.IsInRole("Recepcionista");
                 var isEsti = User.IsInRole("Estilista");
-                var isStaff = isAdmin || isRecep || isEsti;   // cualquiera de staff
+                var isStaff = isAdmin || isRecep || isEsti;
             }
-
-            <!-- NAV principal (siempre visible) -->
-
-            <ul class="vb-nav list-unstyled d-flex mb-0">
-                @* Público y Clientes: accesos con auto-scroll *@
-                @if (!isStaff)
-                {
-                    <li><a asp-controller="Home" asp-action="Index" asp-fragment="servicios">Servicios</a></li>
-                    <li><a asp-controller="Home" asp-action="Index" asp-fragment="productos">Productos</a></li>
-                }
-
-                @* Clientes autenticados: Citas *@
-                @if (isAuth && !isStaff)
-                {
-                    <li><a asp-controller="Citas" asp-action="Index">Citas</a></li>
-                }
-
-                @* Reserva: público (lleva a login) o cliente autenticado. Oculto para staff *@
-                @if (!isStaff)
-                {
-                    if (isAuth)
+                <!-- UN SOLO UL IZQUIERDO -->
+                <ul class="vb-nav list-unstyled d-flex align-items-center me-4">
+                    @* Público y Clientes *@
+                    @if (!isStaff)
                     {
-                        <li><a asp-controller="Citas" asp-action="Create">Reserva</a></li>
+                        <li><a class="nav-link" asp-controller="Home" asp-action="Index" asp-fragment="servicios">Servicios</a></li>
+                        <li><a class="nav-link" asp-controller="Home" asp-action="Index" asp-fragment="productos">Productos</a></li>
                     }
-                    else
+
+                    @* Clientes autenticados *@
+                    @if (isAuth && !isStaff)
                     {
-                        <li>
-                            <a asp-area="Identity" asp-page="/Account/Login"
-                               asp-route-ReturnUrl="@Url.Action("Create", "Citas")">Reserva</a>
-                        </li>
+                        <li><a class="nav-link" asp-controller="Citas" asp-action="Index">Citas</a></li>
                     }
-                }
 
-                @* “Acerca de” y “Contacto” solo para público/cliente (no staff) *@
-                @if (!isStaff)
-                {
-                    <li><a asp-controller="Home" asp-action="Privacy">Acerca de</a></li>
-                    <li><a asp-controller="Home" asp-action="Privacy">Contacto</a></li>
-                }
-            </ul>
+                    @* Reserva: público o cliente; oculto para staff *@
+                    @if (!isStaff)
+                    {
+                        if (isAuth)
+                        {
+                            <li><a class="nav-link" asp-controller="Citas" asp-action="Create">Reserva</a></li>
+                        }
+                        else
+                        {
+                            <li>
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Login"
+                                   asp-route-ReturnUrl="@Url.Action("Create", "Citas")">Reserva</a>
+                            </li>
+                        }
 
+                        <li><a class="nav-link" asp-controller="Home" asp-action="Privacy">Acerca de</a></li>
+                        <li><a class="nav-link" asp-controller="Home" asp-action="Privacy">Contacto</a></li>
+                    }
 
-            @* Menú de Backoffice (solo Admin/Recepcionista) *@
-            @if (isAdmin || isRecep)
-            {
-                <ul class="vb-nav list-unstyled d-flex mb-0 ms-4">
-                    <li><a asp-controller="Clientes" asp-action="Index">Clientes</a></li>
-                    <li><a asp-controller="Productos" asp-action="Index">Productos</a></li>
-                    <li><a asp-controller="Servicios" asp-action="Index">Servicios</a></li>
-                    <li><a asp-controller="UsuariosInternos" asp-action="Index">Personal</a></li>
-                    <li><a asp-controller="Citas" asp-action="Index">Citas</a></li>
-                    <li><a asp-controller="Agenda" asp-action="Index">Agenda</a></li>
+                    @* Backoffice: Admin / Recepcionista *@
+                    @if (isAdmin || isRecep)
+                    {
+                        <li><a class="nav-link" asp-controller="Clientes" asp-action="Index">Clientes</a></li>
+                        <li><a class="nav-link" asp-controller="Productos" asp-action="Index">Productos</a></li>
+                        <li><a class="nav-link" asp-controller="Servicios" asp-action="Index">Servicios</a></li>
+                        <li><a class="nav-link" asp-controller="UsuariosInternos" asp-action="Index">Personal</a></li>
+                        <li><a class="nav-link" asp-controller="Citas" asp-action="Index">Citas</a></li>
+                        <li><a class="nav-link" asp-controller="Agenda" asp-action="Index">Agenda</a></li>
+                    }
+                    else if (isEsti)
+                    {
+                        <li><a class="nav-link" asp-controller="Agenda" asp-action="Index">Agenda</a></li>
+                        <li><a class="nav-link" asp-controller="Citas" asp-action="Index">Citas</a></li>
+                    }
+                        @* Clientes autenticados *@
+                        @if (isAuth && !isStaff)
+                        {
+                            <li><a class="nav-link" asp-controller="Citas" asp-action="MiCarritoActual">🛒 Mi carrito</a></li>
+                        }
+
                 </ul>
-            }
-            else if (isEsti)
-            {
-                <ul class="vb-nav list-unstyled d-flex mb-0 ms-4">
-                    <li><a asp-controller="Agenda" asp-action="Index">Agenda</a></li>
-                    <li><a asp-controller="Citas" asp-action="Index">Citas</a></li>
-                </ul>
-            }
 
-            @* 🛒 Mi carrito: SOLO cliente autenticado *@
-            @if (isAuth && !isStaff)
-            {
-                <ul class="vb-nav list-unstyled d-flex mb-0 ms-4">
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Citas" asp-action="MiCarritoActual">🛒 Mi carrito</a>
-                    </li>
-                </ul>
-            }
-
+            <!-- BLOQUE DERECHO (login / logout) -->
             <div class="ms-auto">
                 @if (!isAuth)
                 {
