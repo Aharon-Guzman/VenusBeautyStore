@@ -23,6 +23,11 @@ namespace VenusBeauty.BLL.Services
         Task<bool> ActualizarEstadoAsync(int idCita, EstadoCita nuevoEstado);
         Task<bool> CancelarCitaAsync(int idCita);
         Task<bool> EliminarCitaAsync(int idCita);
+        //nuevo
+        Task<int?> ResolverCitaClienteAsync(string userId, int? idCita);
+        Task<IEnumerable<Cita>> ObtenerCitasDelClienteAsync(string userId, bool soloAbiertas = true);
+        Task AgregarServicioAsync(int idCita, int idServicio, string userId);
+        Task AgregarProductoAsync(int idCita, int idProducto, int cantidad, string userId);
 
     }
 }

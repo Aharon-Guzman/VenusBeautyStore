@@ -282,6 +282,98 @@ namespace VenusBeautyStore.PL.Controllers
             }
         }
 
+        //nuevo
+        // using VenusBeautyStore.PL.Models;  // para el VM del carrito
+
+        // GET /Citas/ReservarServicio?idServicio=...&idCita=...
+        [Authorize]
+        public async Task<IActionResult> ReservarServicio(int idServicio, int? idCita = null)
+        {
+            var userId = _userManager.GetUserId(User)!;
+
+            var citaId = await _citaService.ResolverCitaClienteAsync(userId, idCita);
+            if (!citaId.HasValue)
+            {
+                // No hay cita seleccionada o no pertenece al cliente → seleccionar
+                return RedirectToAction(nameof(SeleccionarCita), new { idServicio });
+            }
+
+            await _citaService.AgregarServicioAsync(citaId.Value, idServicio, userId);
+            return RedirectToAction(nameof(MiCarrito), new { id = citaId.Value });
+        }
+
+        // GET /Citas/ReservarProducto?idProducto=...&cantidad=1&idCita=...
+        [Authorize]
+        public async Task<IActionResult> ReservarProducto(int idProducto, int cantidad = 1, int? idCita = null)
+        {
+            var userId = _userManager.GetUserId(User)!;
+
+            var citaId = await _citaService.ResolverCitaClienteAsync(userId, idCita);
+            if (!citaId.HasValue)
+            {
+                return RedirectToAction(nameof(SeleccionarCita), new { idProducto, cantidad });
+            }
+
+            await _citaService.AgregarProductoAsync(citaId.Value, idProducto, cantidad, userId);
+            return RedirectToAction(nameof(MiCarrito), new { id = citaId.Value });
+        }
+
+        // Muestra las citas "abiertas" del cliente para elegir
+        //[Authorize(Roles = "Cliente")]
+        [Authorize]
+        public async Task<IActionResult> SeleccionarCita(int? idServicio = null, int? idProducto = null, int cantidad = 1)
+        {
+            var userId = _userManager.GetUserId(User)!;
+            var citas = await _citaService.ObtenerCitasDelClienteAsync(userId, soloAbiertas: true);
+
+            ViewBag.IdServicio = idServicio;
+            ViewBag.IdProducto = idProducto;
+            ViewBag.Cantidad = cantidad;
+
+            return View(citas);
+        }
+
+        // Carrito: resumen de servicios y productos de la cita
+        [Authorize]
+        public async Task<IActionResult> MiCarrito(int id)
+        {
+            var userId = _userManager.GetUserId(User)!;
+
+            var cita = await _citaService.ObtenerCitaAsync(id);
+            if (cita is null) return NotFound();
+
+            // Seguridad: Cliente dueño o Estilista asignado o Admin/Recepcionista
+            var esDueno = cita.Cliente?.UserId == userId;
+            var esEstilista = cita.IdUsuario == userId;
+            var esStaff = User.IsInRole("Admin") || User.IsInRole("Recepcionista");
+
+            if (!esDueno && !esEstilista && !esStaff) return Forbid();
+
+            var vm = new CitaResumenViewModel
+            {
+                IdCita = cita.IdCita,
+                FechaHora = cita.FechaHora,
+                NombreTrabajador = cita.Trabajador != null ? $"{cita.Trabajador.Nombre} {cita.Trabajador.Apellido}" : "(sin estilista)",
+                Total = cita.Total,
+                Servicios = cita.DetalleCitas.Select(d => new ItemServicioVM
+                {
+                    IdServicio = d.IdServicio,
+                    Nombre = d.Servicio?.Nombre ?? $"Servicio #{d.IdServicio}",
+                    Precio = d.Servicio?.Precio ?? 0m
+                }).ToList(),
+                Productos = cita.ReservaProductos.Select(r => new ItemProductoVM
+                {
+                    IdProducto = r.IdProducto,
+                    Nombre = r.Producto?.Nombre ?? $"Producto #{r.IdProducto}",
+                    Cantidad = r.Cantidad,
+                    Subtotal = r.PrecioUnitario * r.Cantidad
+                }).ToList()
+            };
+
+            return View(vm);
+        }
+
+
 
     }
 }

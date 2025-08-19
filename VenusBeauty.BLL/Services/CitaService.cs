@@ -157,5 +157,94 @@ namespace VenusBeauty.BLL.Services
 
         public Task<bool> CancelarCitaAsync(int idCita)
             => ActualizarEstadoAsync(idCita, EstadoCita.Cancelada);
+
+
+        //nuevo
+        /* ---------- NUEVOS para flujo Reservar ---------- */
+
+        // Valida que la cita exista y pertenezca al cliente (por userId). Si no hay idCita, devuelve null
+        public async Task<int?> ResolverCitaClienteAsync(string userId, int? idCita)
+        {
+            if (idCita.HasValue)
+            {
+                var cita = await _citaRepo.GetByIdAsync(idCita.Value);
+                if (cita != null && cita.Cliente?.UserId == userId)
+                    return cita.IdCita;
+                return null; // no es del cliente o no existe
+            }
+            return null;
+        }
+
+        // Lista citas del cliente (por userId), por defecto solo "abiertas" (Reservada/Confirmada)
+        public async Task<IEnumerable<Cita>> ObtenerCitasDelClienteAsync(string userId, bool soloAbiertas = true)
+        {
+            var desde = DateTime.Today.AddYears(-1);
+            var hasta = DateTime.Today.AddYears(1);
+            var todas = await _citaRepo.GetAgendaAsync(desde, hasta, null);
+
+            var mias = todas.Where(c => c.Cliente != null && c.Cliente.UserId == userId);
+
+            if (soloAbiertas)
+                mias = mias.Where(c => c.Estado == EstadoCita.Reservada || c.Estado == EstadoCita.Confirmada);
+
+            return mias.OrderByDescending(c => c.FechaHora);
+        }
+
+        // Agrega un servicio a una cita existente y recalcula total
+        public async Task AgregarServicioAsync(int idCita, int idServicio, string userId)
+        {
+            var cita = await _citaRepo.GetByIdAsync(idCita) ?? throw new InvalidOperationException("La cita no existe.");
+            // Solo el cliente dueño (o el estilista asignado) pueden modificar
+            if (cita.Cliente?.UserId != userId && cita.IdUsuario != userId)
+                throw new InvalidOperationException("No tiene permisos para modificar esta cita.");
+
+            var servicio = await _servicioRepo.GetByIdAsync(idServicio) ?? throw new InvalidOperationException("Servicio inválido.");
+
+            // evitar duplicados
+            if (cita.DetalleCitas.Any(d => d.IdServicio == idServicio))
+                return; // o lanza excepción si prefieres
+
+            cita.DetalleCitas.Add(new DetalleCita { IdServicio = idServicio });
+            cita.Total += servicio.Precio;
+
+            await _citaRepo.UpdateAsync(cita);
+        }
+
+        // Agrega/actualiza un producto en la reserva de la cita
+        public async Task AgregarProductoAsync(int idCita, int idProducto, int cantidad, string userId)
+        {
+            if (cantidad <= 0) throw new InvalidOperationException("Cantidad inválida.");
+
+            var cita = await _citaRepo.GetByIdAsync(idCita) ?? throw new InvalidOperationException("La cita no existe.");
+            if (cita.Cliente?.UserId != userId && cita.IdUsuario != userId)
+                throw new InvalidOperationException("No tiene permisos para modificar esta cita.");
+
+            int disponible = await _productoRepo.GetStockDisponibleAsync(idProducto);
+            if (disponible < cantidad)
+                throw new InvalidOperationException($"Stock insuficiente. Disponible: {disponible}");
+
+            var prod = await _productoRepo.GetByIdAsync(idProducto) ?? throw new InvalidOperationException("Producto inválido.");
+
+            var existente = cita.ReservaProductos.FirstOrDefault(r => r.IdProducto == idProducto);
+            if (existente != null)
+            {
+                existente.Cantidad += cantidad;
+            }
+            else
+            {
+                cita.ReservaProductos.Add(new ReservaProducto
+                {
+                    IdProducto = idProducto,
+                    Cantidad = cantidad,
+                    PrecioUnitario = prod.Precio
+                });
+            }
+
+            cita.Total += prod.Precio * cantidad;
+
+            await _citaRepo.UpdateAsync(cita);
+        }
+
+
     }
 }

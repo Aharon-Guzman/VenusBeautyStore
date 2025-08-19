@@ -1,0 +1,61 @@
+﻿@model IEnumerable<VenusBeauty.DAL.Entities.Cita>
+@{
+    ViewData["Title"] = "Seleccionar cita";
+    int? idServicio = ViewBag.IdServicio as int?;
+    int? idProducto = ViewBag.IdProducto as int?;
+    int cantidad = ViewBag.Cantidad is int c ? c : 1;
+}
+
+<h2 class="mb-3">Selecciona una de tus citas</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No tienes citas abiertas. Crea una nueva para poder reservar.</div>
+    <a class="btn btn-primary" asp-controller="Citas" asp-action="Create">Crear nueva cita</a>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Fecha</th>
+                <th>Estilista</th>
+                <th>Estado</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cita in Model)
+            {
+                <tr>
+                    <td>@cita.IdCita</td>
+                    <td>@cita.FechaHora.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@(cita.Trabajador != null ? $"{cita.Trabajador.Nombre} {cita.Trabajador.Apellido}" : "(sin estilista)")</td>
+                    <td>@cita.Estado</td>
+                    <td class="text-end">
+                        @if (idServicio.HasValue)
+                        {
+                            <a class="btn btn-sm btn-primary"
+                               asp-action="ReservarServicio"
+                               asp-route-idServicio="@idServicio.Value"
+                               asp-route-idCita="@cita.IdCita">Usar esta cita</a>
+                        }
+                        else if (idProducto.HasValue)
+                        {
+                            <a class="btn btn-sm btn-primary"
+                               asp-action="ReservarProducto"
+                               asp-route-idProducto="@idProducto.Value"
+                               asp-route-cantidad="@cantidad"
+                               asp-route-idCita="@cita.IdCita">Usar esta cita</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="mt-3">
+        <a class="btn btn-outline-secondary" asp-controller="Citas" asp-action="Create">Crear otra cita</a>
+    </div>
+}

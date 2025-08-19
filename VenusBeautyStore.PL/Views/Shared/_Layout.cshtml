@@ -21,7 +21,7 @@
             </a>
 
             @* --- NAV PÚBLICO / CLIENTE: usa anclas para scroll --- *@
-            @if (!(User?.Identity?.IsAuthenticated ?? false) || User.IsInRole("Cliente"))
+            @if (!(User?.Identity?.IsAuthenticated ?? false) @* || User.IsInRole("Cliente") *@)
             {
                 <ul class="vb-nav list-unstyled d-flex mb-0">
                     <li><a asp-controller="Home" asp-action="Index" asp-fragment="servicios">Servicios</a></li>
