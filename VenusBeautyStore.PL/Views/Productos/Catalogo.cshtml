@@ -1,0 +1,82 @@
+﻿@model IEnumerable<VenusBeauty.DAL.Entities.Producto>
+@{
+    ViewData["Title"] = "Productos";
+    var q = ViewBag.Q as string;
+    int? targetId = ViewBag.TargetProductoId as int?;
+}
+
+<h1 class="mb-3">Productos</h1>
+
+@if (!string.IsNullOrWhiteSpace(q))
+{
+    <div class="alert alert-info d-flex justify-content-between align-items-center">
+        <span>Filtrado por: <strong>@q</strong></span>
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Catalogo">Limpiar filtro</a>
+    </div>
+}
+
+<style>
+    .vb-highlight {
+        outline: 3px solid;
+        outline-offset: 2px;
+        border-radius: 10px;
+    }
+</style>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+    @foreach (var p in Model)
+    {
+        var img = string.IsNullOrWhiteSpace(p.ImagenUrl)
+        ? Url.Content("~/img/placeholder-product.jpg")
+        : p.ImagenUrl;
+
+        <div class="col" id="prd-@p.IdProducto">
+            <div class="card vb-product-card h-100">
+                <div class="vb-card-img-wrap">
+                    <img class="vb-card-img" src="@img" alt="@p.Nombre" />
+                </div>
+
+                <div class="card-body d-flex flex-column">
+                    <h3 class="vb-product-title">@p.Nombre</h3>
+
+                    @if (!string.IsNullOrWhiteSpace(p.Descripcion))
+                    {
+                        <p class="vb-product-desc">@p.Descripcion</p>
+                    }
+
+                    <div class="mt-auto d-flex align-items-center justify-content-between">
+                        <span class="vb-price">@p.Precio.ToString("C")</span>
+
+                        <!-- Botón que usa tu flujo con carrito -->
+                        <a class="btn btn-sm btn-primary"
+                           asp-controller="Citas"
+                           asp-action="ReservarProducto"
+                           asp-route-idProducto="@p.IdProducto"
+                           asp-route-cantidad="1">
+                            Reservar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        (function() {
+          let anchor = window.location.hash?.replace('#', '');
+          if (!anchor && '@(targetId?.ToString() ?? "")' !== '') {
+              anchor = 'prd-' + '@targetId';
+          }
+          if (!anchor) return;
+
+          const el = document.getElementById(anchor);
+          if (!el) return;
+
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.classList.add('vb-highlight');
+          setTimeout(() => el.classList.remove('vb-highlight'), 2000);
+        })();
+    </script>
+}

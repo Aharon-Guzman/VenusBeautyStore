@@ -36,7 +36,13 @@ else
                         </div> *@
                         <div class="vb-card-actions">
                             <span class="vb-price">@p.Precio.ToString("C")</span>
-                            <a class="btn btn-sm vb-btn-dark" asp-controller="Home" asp-action="Productos">Ver</a>
+                            <a class="btn vb-btn-dark btn-sm"
+                               asp-controller="Productos"
+                               asp-action="Catalogo"
+                               asp-route-idProducto="@p.IdProducto"
+                               asp-fragment="prd-@p.IdProducto">
+                                Ver
+                            </a>
                         </div>
 
                     </div>

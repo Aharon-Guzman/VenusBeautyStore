@@ -19,7 +19,6 @@
                asp-area="" asp-controller="Home" asp-action="Index">
                 Venus Beauty
             </a>
-
             @* --- NAV PÚBLICO / CLIENTE: usa anclas para scroll --- *@
             @if (!(User?.Identity?.IsAuthenticated ?? false) @* || User.IsInRole("Cliente") *@)
             {
@@ -61,7 +60,11 @@
                     <li><a asp-controller="Citas" asp-action="Index">Citas</a></li>
                 </ul>
             }
-
+            <ul class="vb-nav list-unstyled d-flex mb-0">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Citas" asp-action="MiCarritoActual">🛒 Mi carrito</a>
+                </li>
+            </ul>
             <div class="ms-auto">
                 @if (!(User?.Identity?.IsAuthenticated ?? false))
                 {

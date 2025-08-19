@@ -168,5 +168,21 @@ namespace VenusBeautyStore.PL.Controllers
 
             return Ok(new { success = true });
         }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> Catalogo(string? q, int? idProducto)
+        {
+            // Si prefieres incluir inactivos, cambia a ObtenerProductosAsync()
+            var productos = await _productoService.ObtenerProductosActivosAsync();
+
+            if (!string.IsNullOrWhiteSpace(q))
+                productos = productos
+                    .Where(p => p.Nombre.Contains(q, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+            ViewBag.Q = q;
+            ViewBag.TargetProductoId = idProducto; // para auto-scroll en la vista
+            return View(productos);
+        }
     }
 }

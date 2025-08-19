@@ -157,7 +157,8 @@ namespace VenusBeautyStore.PL.Controllers
             // 👉 (opcional) marcar el servicio pendiente en los checkboxes
             if (idServicio.HasValue)
                 vm.ServiciosSeleccionados = new List<int> { idServicio.Value };
-
+            if (idProducto.HasValue)
+                vm.ProductosSeleccionados[idProducto.Value] = Math.Max(1, cantidad);
             return View(vm);
         }
 
@@ -502,6 +503,8 @@ namespace VenusBeautyStore.PL.Controllers
             }
             return RedirectToAction(nameof(MiCarrito), new { id = abierta.IdCita });
         }
+
+
 
     }
 }
