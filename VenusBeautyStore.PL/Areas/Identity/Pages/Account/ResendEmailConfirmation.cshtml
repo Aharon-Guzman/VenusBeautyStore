@@ -1,0 +1,31 @@
+﻿@page
+@model VenusBeautyStore.PL.Areas.Identity.Pages.Account.ResendEmailConfirmationModel
+@{
+    ViewData["Title"] = "Reenviar confirmación";
+}
+
+<h1 class="mb-3">@ViewData["Title"]</h1>
+
+@if (TempData["Success"] is string ok)
+{
+    <div class="alert alert-success">@ok</div>
+}
+@if (TempData["Info"] is string info)
+{
+    <div class="alert alert-info">@info</div>
+}
+
+<form method="post" class="row g-3">
+    <div class="col-12 col-md-6">
+        <label asp-for="Input.Email" class="form-label"></label>
+        <input asp-for="Input.Email" class="form-control" />
+        <span asp-validation-for="Input.Email" class="text-danger"></span>
+    </div>
+    <div class="col-12">
+        <button class="btn btn-primary">Reenviar enlace</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
