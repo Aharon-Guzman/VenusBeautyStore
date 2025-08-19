@@ -1,0 +1,18 @@
+﻿@page
+@model VenusBeautyStore.PL.Areas.Identity.Pages.Account.RegisterConfirmationModel
+@{
+    ViewData["Title"] = "Revisa tu correo";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (!string.IsNullOrWhiteSpace(Model.Email))
+{
+    <p>Te enviamos un enlace de confirmación a <strong>@Model.Email</strong>.</p>
+}
+else
+{
+    <p>Te enviamos un enlace de confirmación a tu correo.</p>
+}
+
+<p>Por favor abre tu correo y haz clic en “Confirmar mi correo”.</p>
