@@ -51,20 +51,20 @@
                                asp-route-id="@c.IdCita">
                                 Editar
                             </a>
-
-                            <a class="btn btn-sm btn-outline-danger ms-1"
-                               asp-controller="Citas"
-                               asp-action="Delete"
-                               asp-route-id="@c.IdCita">
-                                Eliminar
-                            </a>
                         }
                         else
                         {
                             <span class="text-muted">—</span>
                         }
                     }
+                    <a class="btn btn-sm btn-outline-danger ms-1"
+                       asp-controller="Citas"
+                       asp-action="Delete"
+                       asp-route-id="@c.IdCita">
+                        Eliminar
+                    </a>
                 </td>
+
             </tr>
         }
     </tbody>

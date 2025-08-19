@@ -1,4 +1,4 @@
-﻿@model VenusBeautyStore.PL.Models.CitaResumenViewModel
+﻿@* @model VenusBeautyStore.PL.Models.CitaResumenViewModel
 @{
     ViewData["Title"] = "Mi reserva";
 }
@@ -55,4 +55,97 @@
     <a class="btn btn-outline-secondary" asp-controller="Servicios" asp-action="Catalogo">Agregar más servicios</a>
     <a class="btn btn-outline-secondary" asp-controller="Productos" asp-action="Catalogo">Agregar productos</a>
     @* <a class="btn btn-success" asp-action="Confirmar" asp-route-id="@Model.IdCita">Confirmar cita</a> *@
+@* </div> *@
+@model VenusBeautyStore.PL.Models.CitaResumenViewModel
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<h4>Servicios</h4>
+<table class="table table-sm align-middle">
+    <thead><tr><th>Servicio</th><th class="text-end">Precio</th><th></th></tr></thead>
+    <tbody>
+        @foreach (var s in Model.Servicios)
+        {
+            <tr>
+                <td>@s.Nombre</td>
+                <td class="text-end">@s.Precio.ToString("C")</td>
+                <td class="text-end">
+                    <form asp-action="EliminarServicio" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="idCita" value="@Model.IdCita" />
+                        <input type="hidden" name="idServicio" value="@s.IdServicio" />
+                        <button class="btn btn-sm btn-outline-danger">Quitar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h4>Productos</h4>
+<table class="table table-sm align-middle">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th style="width:220px">Cant.</th>   <!-- antes 120px -->
+            <th class="text-end">Subtotal</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model.Productos)
+        {
+            <tr>
+                <td>@p.Nombre</td>
+                <td>
+                    <form asp-action="ActualizarCantidadProducto" method="post" class="m-0">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="idCita" value="@Model.IdCita" />
+                        <input type="hidden" name="idProducto" value="@p.IdProducto" />
+
+                        <div class="input-group input-group-sm" style="max-width: 240px;">
+                            <input type="number"
+                                   name="cantidad"
+                                   min="1"
+                                   value="@p.Cantidad"
+                                   class="form-control text-end"
+                                   style="min-width: 90px;" />
+                            <button class="btn btn-outline-primary">Actualizar</button>
+                        </div>
+                    </form>
+                </td>
+
+                <td class="text-end">@p.Subtotal.ToString("C")</td>
+                <td class="text-end">
+                    <form asp-action="EliminarProducto" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="idCita" value="@Model.IdCita" />
+                        <input type="hidden" name="idProducto" value="@p.IdProducto" />
+                        <button class="btn btn-sm btn-outline-danger">Quitar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-end">
+    <h3>Total: @Model.Total.ToString("C")</h3>
+</div>
+
+<div class="d-flex gap-2">
+    <a class="btn btn-outline-secondary" asp-controller="Servicios" asp-action="Catalogo">Agregar más servicios</a>
+    <a class="btn btn-outline-secondary" asp-controller="Productos" asp-action="Catalogo">Agregar productos</a>
+    <form asp-action="Confirmar" method="post" class="ms-auto">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.IdCita" />
+        <button class="btn btn-success">Confirmar cita</button>
+    </form>
 </div>

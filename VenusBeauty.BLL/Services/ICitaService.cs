@@ -29,5 +29,10 @@ namespace VenusBeauty.BLL.Services
         Task AgregarServicioAsync(int idCita, int idServicio, string userId);
         Task AgregarProductoAsync(int idCita, int idProducto, int cantidad, string userId);
 
+        Task QuitarServicioAsync(int idCita, int idServicio, string userId);
+        Task QuitarProductoAsync(int idCita, int idProducto, string userId);
+        Task ActualizarCantidadProductoAsync(int idCita, int idProducto, int nuevaCantidad, string userId);
+
+
     }
 }

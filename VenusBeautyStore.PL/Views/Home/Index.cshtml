@@ -109,7 +109,15 @@
 <!-- Nuestros productos (dinámico) -->
 <section class="vb-section" id="productos">
     <div class="container-xl">
-        <h2 class="vb-section-title mb-4">Nuestros productos</h2>
+        @* <h2 class="vb-section-title mb-4">Nuestros productos</h2> *@
+        <h2 class="vb-section-title mb-4">
+            <a asp-controller="Productos"
+               asp-action="Catalogo"
+               class="text-reset text-decoration-none">
+                Nuestros productos
+            </a>
+        </h2>
+        <hr class="my-4" />
         @await Html.PartialAsync("_ProductosGrid", Model.Productos)
     </div>
 </section>
@@ -117,7 +125,15 @@
 <!-- Nuestros servicios (dinámico) -->
 <section class="vb-section" id="servicios">
     <div class="container-xl">
-        <h2 class="vb-section-title mb-4">Nuestros servicios</h2>
+        @* <h2 class="vb-section-title mb-4">Nuestros servicios</h2> *@
+        <h2 class="vb-section-title mb-4">
+            <a asp-controller="Servicios"
+               asp-action="Catalogo"
+               class="text-reset text-decoration-none">
+                Nuestros servicios
+            </a>
+        </h2>
+        <hr class="my-4" />
         @await Html.PartialAsync("_ServiciosGrid", Model.Servicios)
     </div>
 </section>

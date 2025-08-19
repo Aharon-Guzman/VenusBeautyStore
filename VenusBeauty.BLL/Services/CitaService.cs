@@ -245,6 +245,70 @@ namespace VenusBeauty.BLL.Services
             await _citaRepo.UpdateAsync(cita);
         }
 
+        public async Task QuitarServicioAsync(int idCita, int idServicio, string userId)
+        {
+            var cita = await _citaRepo.GetByIdAsync(idCita) ?? throw new InvalidOperationException("La cita no existe.");
+            if (cita.Cliente?.UserId != userId && cita.IdUsuario != userId)
+                throw new InvalidOperationException("No tiene permisos para modificar esta cita.");
+            if (cita.Estado is EstadoCita.Cancelada or EstadoCita.Completada)
+                throw new InvalidOperationException("No se puede modificar una cita cerrada.");
+
+            var det = cita.DetalleCitas.FirstOrDefault(d => d.IdServicio == idServicio)
+                      ?? throw new InvalidOperationException("El servicio no está en la cita.");
+
+            var srv = await _servicioRepo.GetByIdAsync(idServicio) ?? throw new InvalidOperationException("Servicio inválido.");
+            cita.DetalleCitas.Remove(det);
+            cita.Total -= srv.Precio;
+
+            await _citaRepo.UpdateAsync(cita);
+        }
+
+        public async Task QuitarProductoAsync(int idCita, int idProducto, string userId)
+        {
+            var cita = await _citaRepo.GetByIdAsync(idCita) ?? throw new InvalidOperationException("La cita no existe.");
+            if (cita.Cliente?.UserId != userId && cita.IdUsuario != userId)
+                throw new InvalidOperationException("No tiene permisos para modificar esta cita.");
+            if (cita.Estado is EstadoCita.Cancelada or EstadoCita.Completada)
+                throw new InvalidOperationException("No se puede modificar una cita cerrada.");
+
+            var res = cita.ReservaProductos.FirstOrDefault(r => r.IdProducto == idProducto)
+                      ?? throw new InvalidOperationException("El producto no está en la cita.");
+
+            cita.Total -= res.PrecioUnitario * res.Cantidad;
+            cita.ReservaProductos.Remove(res);
+
+            await _citaRepo.UpdateAsync(cita);
+        }
+
+        public async Task ActualizarCantidadProductoAsync(int idCita, int idProducto, int nuevaCantidad, string userId)
+        {
+            if (nuevaCantidad <= 0) throw new InvalidOperationException("Cantidad inválida.");
+
+            var cita = await _citaRepo.GetByIdAsync(idCita) ?? throw new InvalidOperationException("La cita no existe.");
+            if (cita.Cliente?.UserId != userId && cita.IdUsuario != userId)
+                throw new InvalidOperationException("No tiene permisos para modificar esta cita.");
+            if (cita.Estado is EstadoCita.Cancelada or EstadoCita.Completada)
+                throw new InvalidOperationException("No se puede modificar una cita cerrada.");
+
+            var res = cita.ReservaProductos.FirstOrDefault(r => r.IdProducto == idProducto)
+                      ?? throw new InvalidOperationException("El producto no está en la cita.");
+
+            // Validar stock extra requerido
+            int delta = nuevaCantidad - res.Cantidad;
+            if (delta > 0)
+            {
+                int disponible = await _productoRepo.GetStockDisponibleAsync(idProducto);
+                if (disponible < delta)
+                    throw new InvalidOperationException($"Stock insuficiente. Disponible adicional: {disponible}");
+            }
+
+            // Recalcular total
+            cita.Total -= res.PrecioUnitario * res.Cantidad;
+            res.Cantidad = nuevaCantidad;
+            cita.Total += res.PrecioUnitario * res.Cantidad;
+
+            await _citaRepo.UpdateAsync(cita);
+        }
 
     }
 }

@@ -341,7 +341,8 @@ namespace VenusBeautyStore.PL.Controllers
             }
         }
         // GET: /Citas/Delete/5
-        [Authorize(Roles = "Admin,Recepcionista")]
+        //[Authorize(Roles = "Admin,Recepcionista")]
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -363,7 +364,8 @@ namespace VenusBeautyStore.PL.Controllers
 
             return View(vm);
         }
-        [Authorize(Roles = "Admin,Recepcionista")]
+        //[Authorize(Roles = "Admin,Recepcionista")]
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(VenusBeautyStore.PL.Models.CitaDeleteViewModel vm)
@@ -504,6 +506,49 @@ namespace VenusBeautyStore.PL.Controllers
             return RedirectToAction(nameof(MiCarrito), new { id = abierta.IdCita });
         }
 
+        [Authorize, HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> EliminarServicio(int idCita, int idServicio)
+        {
+            var userId = _userManager.GetUserId(User)!;
+            try { await _citaService.QuitarServicioAsync(idCita, idServicio, userId); TempData["Success"] = "Servicio eliminado."; }
+            catch (Exception ex) { TempData["Error"] = ex.Message; }
+            return RedirectToAction(nameof(MiCarrito), new { id = idCita });
+        }
+
+        [Authorize, HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> EliminarProducto(int idCita, int idProducto)
+        {
+            var userId = _userManager.GetUserId(User)!;
+            try { await _citaService.QuitarProductoAsync(idCita, idProducto, userId); TempData["Success"] = "Producto eliminado."; }
+            catch (Exception ex) { TempData["Error"] = ex.Message; }
+            return RedirectToAction(nameof(MiCarrito), new { id = idCita });
+        }
+
+        [Authorize, HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> ActualizarCantidadProducto(int idCita, int idProducto, int cantidad)
+        {
+            var userId = _userManager.GetUserId(User)!;
+            try { await _citaService.ActualizarCantidadProductoAsync(idCita, idProducto, cantidad, userId); TempData["Success"] = "Cantidad actualizada."; }
+            catch (Exception ex) { TempData["Error"] = ex.Message; }
+            return RedirectToAction(nameof(MiCarrito), new { id = idCita });
+        }
+
+        // Confirmar cita
+        [Authorize, HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Confirmar(int id)
+        {
+            try
+            {
+                await _citaService.ActualizarEstadoAsync(id, EstadoCita.Confirmada);
+                TempData["Success"] = "Cita confirmada.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(MiCarrito), new { id });
+            }
+        }
 
 
     }
