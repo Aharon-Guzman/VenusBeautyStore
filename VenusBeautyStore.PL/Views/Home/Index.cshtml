@@ -8,18 +8,16 @@
 <section class="vb-hero full-bleed d-flex align-items-center">
     <div class="container-xl text-center">
         <h1>Venus Beauty Store</h1>
-
-        <a class="btn vb-btn-dark vb-cta"
-           asp-area="Identity"
+        @if (!User?.Identity?.IsAuthenticated ?? false)
+        {
+            <a class="btn vb-btn-dark vb-cta"
+            asp-area="Identity"
            asp-page="/Account/Register">
             Crear Cuenta
         </a>
+        }
     </div>
 </section>
-
-
-
-
 <!-- Servicios Destacados -->
 <section class="vb-section"@*  id="servicios" *@>
     <div class="container-xl text-center">
@@ -37,7 +35,7 @@
                         Transforma tu look con nuestros tintes profesionales. Contamos con una amplia
                         gama de colores vibrantes y fórmulas de alta calidad.
                     </p>
-                    <a class="btn vb-btn-dark btn-sm" asp-controller="Servicios" asp-action="Index">Ver</a>
+                    <a class="btn vb-btn-dark btn-sm" asp-controller="Servicios" asp-action="Catalogo">Ver</a>
                 </div>
             </div>
 
@@ -52,7 +50,7 @@
                         Renueva tu imagen con cortes modernos y personalizados. Te asesoramos para
                         encontrar el corte ideal que resalte tus facciones y personalidad.
                     </p>
-                    <a class="btn vb-btn-dark btn-sm" asp-controller="Servicios" asp-action="Index">Ver</a>
+                    <a class="btn vb-btn-dark btn-sm" asp-controller="Servicios" asp-action="Catalogo">Ver</a>
                 </div>
             </div>
 
@@ -67,45 +65,13 @@
                         Luce manos impecables con manicura profesional. Diseños clásicos y vanguardistas
                         con productos de larga duración.
                     </p>
-                    <a class="btn vb-btn-dark btn-sm" asp-controller="Servicios" asp-action="Index">Ver</a>
+                    <a class="btn vb-btn-dark btn-sm" asp-controller="Servicios" asp-action="Catalogo">Ver</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-@* <section class="vb-section" id="productos">
-<!-- Nuestros productos (dinámico) -->
-<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 vb-products-grid">
-    @foreach (var p in Model)
-    {
-        <div class="col">
-            <article class="vb-card h-100 d-flex flex-column">
-                <div class="vb-thumb">
-                    <img src="@(string.IsNullOrWhiteSpace(p.ImagenUrl) ? Url.Content("~/img/placeholder-product.jpg") : p.ImagenUrl)"
-                         alt="@p.Nombre" />
-                </div>
-
-                <div class="vb-body">
-                    <h3 class="vb-title">@p.Nombre</h3>
-                    <p class="vb-desc">@p.Descripcion</p>
-                </div>
-
-                <div class="vb-meta mt-auto">
-                    <div class="vb-price">@p.Precio.ToString("C")</div>
-                    <a class="btn vb-btn-dark vb-cta">Ver</a>
-                </div>
-            </article>
-        </div>
-    }
-</div>
-
-<div class="text-center mt-3">
-    <a asp-controller="Productos" asp-action="PublicIndex" class="btn vb-btn-dark">Ver todos</a>
-</div>
-</section> *@
-
-<!-- …tu hero y “Servicios destacados” estático… -->
+<!-- hero y “Servicios destacados” estático… -->
 <!-- Nuestros productos (dinámico) -->
 <section class="vb-section" id="productos">
     <div class="container-xl">
@@ -150,7 +116,6 @@
                         garantiza una experiencia rejuvenecedora y revitalizante, atendiendo cada necesidad con precisión y cuidado.
                     </p>
                     <a class="btn vb-btn-dark mt-3" asp-controller="Home" asp-action="Privacy">Leer Más</a>
-                    @* cambia el destino cuando tengas tu página "Nosotros" *@
                 </div>
 
                 <div class="col-12 col-lg-6">
@@ -163,8 +128,3 @@
         </div>
     </div>
 </section>
-
-@* <!-- Opcional: anclas que usaremos luego para el scroll del menú -->
-<section id="servicios" class="py-5"></section>
-<section id="productos" class="py-5"></section>
- *@
