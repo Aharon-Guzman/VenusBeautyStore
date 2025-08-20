@@ -342,7 +342,7 @@ namespace VenusBeautyStore.PL.Controllers
         }
         // GET: /Citas/Delete/5
         //[Authorize(Roles = "Admin,Recepcionista")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Recepcionista")]
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -365,7 +365,7 @@ namespace VenusBeautyStore.PL.Controllers
             return View(vm);
         }
         //[Authorize(Roles = "Admin,Recepcionista")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Recepcionista")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(VenusBeautyStore.PL.Models.CitaDeleteViewModel vm)

@@ -21,8 +21,8 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Id</th>
-            <th>Cliente</th>
+@*             <th>Id</th>
+ *@            <th>Cliente</th>
             <th>Trabajador</th>
             <th>Fecha</th>
             <th>Estado</th>
@@ -34,8 +34,8 @@
         @foreach (var c in Model)
         {
             <tr>
-                <td>@c.IdCita</td>
-                <td>@(c.Cliente?.Nombre) @(c.Cliente?.Apellido1) @(c.Cliente?.Apellido2)</td>
+@*                 <td>@c.IdCita</td>
+ *@                <td>@(c.Cliente?.Nombre) @(c.Cliente?.Apellido1) @(c.Cliente?.Apellido2)</td>
                 <td>@(c.Trabajador?.Nombre) @(c.Trabajador?.Apellido)</td>
                 <td>@c.FechaHora</td>
                 <td>@c.Estado</td>
@@ -45,35 +45,39 @@
                     {
                         if (c.Estado != VenusBeauty.DAL.Entities.EstadoCita.Completada)
                         {
-                            <a class="btn btn-sm btn-outline-primary"
+@*                             <a class="btn btn-sm btn-outline-primary"
                                asp-controller="Citas"
                                asp-action="Edit"
                                asp-route-id="@c.IdCita">
                                 Editar
+                            </a> *@
+
+                            <a class="btn btn-sm btn-outline-danger ms-1"
+                               asp-controller="Citas"
+                               asp-action="Delete"
+                               asp-route-id="@c.IdCita">
+                                Eliminar
                             </a>
+
                         }
                         else
                         {
                             <span class="text-muted">—</span>
                         }
                     }
-                    <a class="btn btn-sm btn-outline-danger ms-1"
-                       asp-controller="Citas"
-                       asp-action="Delete"
-                       asp-route-id="@c.IdCita">
-                        Eliminar
-                    </a>
+
                 </td>
 
             </tr>
         }
     </tbody>
 </table>
-
-<div class="mb-3">
-    <a class="btn btn-primary" asp-controller="Citas" asp-action="Create">Nueva Cita</a>
-</div>
-
+@if (User.IsInRole("Admin") || User.IsInRole("Recepcionista"))
+{
+    <div class="mb-3">
+        <a class="btn btn-primary" asp-controller="Citas" asp-action="Create">Nueva Cita</a>
+    </div>
+}
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/productos/productos.js"></script>

@@ -33,6 +33,17 @@ namespace VenusBeautyStore.PL.Controllers
                           .Take(6).ToList()
             };
 
+
+            // Si es interno (admin/recep/estilista), mándalo al portal de gestión
+            if (User?.Identity?.IsAuthenticated == true &&
+                (User.IsInRole("Admin") || User.IsInRole("Recepcionista") || User.IsInRole("Estilista")))
+            {
+                return RedirectToAction("Index", "Portal");
+            }
+
+
+
+
             return View(vm);
         }
 
