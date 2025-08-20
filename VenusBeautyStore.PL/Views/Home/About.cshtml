@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Sobre Venus Beauty";
+}
+
+<div class="container py-5">
+    <div class="row g-4 align-items-center">
+        <div class="col-lg-7">
+            <h1 class="display-6 mb-3">Sobre <span class="fw-semibold">Venus Beauty</span></h1>
+            <p class="lead">
+                Somos un salón enfocado en experiencias de belleza modernas, con atención cercana y resultados consistentes.
+                Trabajamos con productos profesionales y un equipo de estilistas comprometidos con la calidad.
+            </p>
+            <ul class="mb-4">
+                <li>Estilistas certificados y en capacitación continua.</li>
+                <li>Agenda online para reservar de forma rápida y segura.</li>
+                <li>Protocolos de higiene y seguridad para tu tranquilidad.</li>
+                <li>Productos recomendados y compatibles con cada servicio.</li>
+            </ul>
+            <div class="d-flex gap-2">
+                <a asp-controller="Citas" asp-action="Create" class="btn vb-btn-dark">Reservar cita</a>
+                <a asp-controller="Servicios" asp-action="Index" class="btn btn-outline-secondary">Ver servicios</a>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="p-4 bg-light rounded-3 h-100">
+                <h2 class="h5">Misión</h2>
+                <p class="mb-3">Realzar tu estilo con técnicas actuales y un servicio honesto.</p>
+                <h2 class="h5">Visión</h2>
+                <p class="mb-3">Ser el salón de referencia por calidad, calidez y confiabilidad.</p>
+                <h2 class="h5">Valores</h2>
+                <p class="mb-0">Respeto, excelencia, transparencia y aprendizaje continuo.</p>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-5" />
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="border rounded-3 p-4 h-100">
+                <h3 class="h6">Horario</h3>
+                <p class="mb-0">Lun–Sáb: 9:00–19:00<br />Dom: Cerrado</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="border rounded-3 p-4 h-100">
+                <h3 class="h6">Ubicación</h3>
+                <p class="mb-0">San José, Costa Rica</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="border rounded-3 p-4 h-100">
+                <h3 class="h6">Contacto</h3>
+                <p class="mb-0">WhatsApp: (506) 0000-0000<br />Email: soporte@venusbeautystore.com</p>
+            </div>
+        </div>
+    </div>
+</div>

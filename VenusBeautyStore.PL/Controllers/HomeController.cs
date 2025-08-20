@@ -58,7 +58,7 @@ namespace VenusBeautyStore.PL.Controllers
 
             return View(activos); 
         }
-
+        public IActionResult About() => View();
         public IActionResult Privacy() => View();
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

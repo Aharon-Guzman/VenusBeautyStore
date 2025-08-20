@@ -417,3 +417,181 @@ main {
         padding: .5rem 0;
         white-space: nowrap;
     }
+
+
+    /*Ajustes en layout   */
+
+
+/* ===== Navbar (responsivo, sin cambiar colores) ===== */
+.vb-navbar.navbar {
+    /* aquí NO tocamos colores; solo espaciado si quieres */
+/*     padding: .25rem 0;  <-- opcional 
+*/}
+
+.vb-brand {
+    font-weight: 700;
+}
+
+/* Espaciado de links y alineación en desktop */
+/*.navbar .nav-link {
+    padding: .5rem .75rem;
+}*/
+
+/* Menú colapsado: columnas cómodas en móvil */
+@media (max-width: 991.98px) {
+    .navbar .nav-link {
+        padding: .5rem 0;
+    }
+    /* separa el bloque derecho (login/logout) del menú al abrir en móvil */
+    #mainNav .d-flex.ms-lg-3 {
+        margin-left: 0 !important;
+        margin-top: .5rem !important;
+    }
+}
+
+/* Opcional: mejorar foco del toggler sin color fijo */
+.vb-navbar .navbar-toggler:focus {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+/* ===== Footer (responsivo, sin cambiar colores) ===== */
+
+    /* Enlaces: no forzamos color; solo estilo */
+    .vb-footer a {
+        text-decoration: none;
+        opacity: .9;
+    }
+
+        .vb-footer a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+/* Íconos sociales: solo tamaño y uso de color heredado */
+.vb-social svg {
+    width: 22px;
+    height: 22px;
+    /* sin fill fijo; usa el color heredado */
+    fill: currentColor;
+}
+
+/* Footer: apila en móvil y separa elementos */
+@media (max-width: 767.98px) {
+    .vb-footer .container-xl {
+        gap: 1rem;
+    }
+
+    .vb-footer-links {
+        justify-content: center;
+    }
+}
+
+/*mas*/
+
+/* Restaurar colores del texto del navbar a los tuyos */
+.vb-navbar .navbar-brand,
+.vb-navbar .nav-link,
+.vb-navbar .nav-link:focus {
+    color: inherit !important; /* usa el color que ya tenga .vb-navbar */
+}
+
+    /* Hover/activo: mismo color, solo un leve cambio de opacidad */
+    .vb-navbar .nav-link:hover,
+    .vb-navbar .nav-link.active,
+    .vb-navbar .nav-link.show {
+        color: inherit !important;
+        opacity: .85;
+    }
+
+/* Botón toggler: que herede el color de tu navbar (borde) */
+.vb-navbar .navbar-toggler {
+    color: inherit;
+    border-color: currentColor;
+}
+
+
+
+/* Collapse móvil: ocupar ancho y permitir scroll si hay muchos items */
+@media (max-width: 991.98px) {
+    #mainNav {
+        width: 100%;
+        max-height: calc(100vh - 120px);
+        overflow-y: auto;
+        padding-top: .25rem;
+        padding-bottom: .5rem;
+    }
+
+        #mainNav .navbar-nav {
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: .25rem;
+        }
+}
+
+/* Restaurar colores del texto del navbar a los tuyos */
+.vb-navbar .navbar-brand,
+.vb-navbar .nav-link,
+.vb-navbar .nav-link:focus {
+    color: inherit !important;
+}
+
+    .vb-navbar .nav-link:hover,
+    .vb-navbar .nav-link.active,
+    .vb-navbar .nav-link.show {
+        color: inherit !important;
+        opacity: .85;
+    }
+
+/* Toggler: que herede el color de tu navbar */
+.vb-navbar .navbar-toggler {
+    color: inherit;
+    border-color: currentColor;
+}
+
+/* Neutralizar reglas antiguas de .vb-nav que forzaban layout */
+.vb-nav {
+    gap: initial;
+    flex: initial;
+    justify-content: initial;
+    align-items: initial;
+    flex-wrap: wrap;
+}
+
+    .vb-nav .nav-link {
+        white-space: normal;
+    }
+
+
+/* Offcanvas del menú móvil: mismo look del navbar, sin tocar tu paleta global */
+.vb-offcanvas {
+    background: #cfcdc7; /* mismo fondo del navbar */
+    color: inherit;
+    border-bottom: 1px solid rgba(0,0,0,.08);
+}
+
+    .vb-offcanvas .nav-link {
+        color: inherit;
+    }
+
+        .vb-offcanvas .nav-link:hover {
+            opacity: .85;
+        }
+
+/* Colores del navbar heredados (por si Bootstrap intenta sobrescribir) */
+.vb-navbar .navbar-brand,
+.vb-navbar .nav-link {
+    color: inherit !important;
+}
+
+.vb-navbar .navbar-toggler {
+    color: inherit;
+    border-color: currentColor;
+}
+
+/* Centrado del menú en desktop */
+@media (min-width: 992px) {
+    .navbar-nav {
+        gap: .5rem;
+    }
+}
