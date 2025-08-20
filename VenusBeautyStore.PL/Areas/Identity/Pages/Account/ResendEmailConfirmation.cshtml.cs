@@ -1,11 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text;
-using System.Text.Encodings.Web;
+﻿using Humanizer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using System.ComponentModel.DataAnnotations;
+using System.Drawing.Printing;
+using System.Text;
+using System.Text.Encodings.Web;
 using VenusBeauty.DAL.Entities;
 
 namespace VenusBeautyStore.PL.Areas.Identity.Pages.Account
@@ -70,7 +72,13 @@ namespace VenusBeautyStore.PL.Areas.Identity.Pages.Account
 
             var body = $@"
         <p>Para confirmar tu cuenta, haz clic aquí:</p>
-        <p><a href=""{HtmlEncoder.Default.Encode(callbackUrl)}"">Confirmar mi correo</a></p>";
+        <p><a href=""{HtmlEncoder.Default.Encode(callbackUrl)}"">Confirmar mi correo</a></p>
+        < div style = ""margin - top:20px; border - top:1px solid #e5e7eb;padding-top:16px"">
+             <a href= ""https://venusbeautystore.com"" target=""_blank"" rel=""noopener"">
+                 < img src = ""cid: vbs - signature"" alt = ""Soporte Venus Beauty Store""
+                   style = ""max - width:520px; width: 100 %; height: auto; border - radius:12px; display: block; "" />
+             </ a >
+         </ div >";
 
             await _emailSender.SendEmailAsync(Input.Email, "Confirmar cuenta - Venus Beauty", body);
 
