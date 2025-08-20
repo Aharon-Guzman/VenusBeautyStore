@@ -8,6 +8,8 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using VenusBeauty.DAL.Entities;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.DataProtection;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,6 +62,17 @@ builder.Services.AddScoped<ICitaService, CitaService>();
 // ✅ Razor Pages (necesario para /Identity/Account/...) y MVC
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
+
+
+//Despliegue
+// ✅ Claves persistentes para cookies/tokens en producción
+var keysPath = Path.Combine(builder.Environment.ContentRootPath, "App_Data", "keys");
+Directory.CreateDirectory(keysPath);
+
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(keysPath))
+    .SetApplicationName("VenusBeautyStore");
+
 
 // ✅ Logging
 builder.Logging.ClearProviders();
