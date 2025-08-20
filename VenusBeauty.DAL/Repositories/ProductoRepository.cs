@@ -21,27 +21,27 @@ namespace VenusBeauty.DAL.Repositories
 
         public async Task<List<Producto>> GetAllAsync()
         {
-            return await _context.Producto.ToListAsync(); // ✅
+            return await _context.Producto.ToListAsync(); 
         }
 
         public async Task<Producto?> GetByIdAsync(int id)
         {
-            return await _context.Producto.FindAsync(id); // ✅
+            return await _context.Producto.FindAsync(id); 
         }
 
         public async Task AddAsync(Producto producto)
         {
-            await _context.Producto.AddAsync(producto); // ✅
+            await _context.Producto.AddAsync(producto); 
         }
 
         public async Task UpdateAsync(Producto producto)
         {
-            _context.Producto.Update(producto); // ✅
+            _context.Producto.Update(producto); 
         }
 
         public async Task DeleteAsync(Producto producto)
         {
-            _context.Entry(producto).State = EntityState.Deleted; // ⚠️ Cambia esto, antes lo habías puesto como Detached
+            _context.Entry(producto).State = EntityState.Deleted; 
         }
 
         public async Task SaveChangesAsync()

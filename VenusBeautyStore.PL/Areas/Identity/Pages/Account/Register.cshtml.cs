@@ -82,7 +82,6 @@ namespace VenusBeautyStore.PL.Areas.Identity.Pages.Account
             {
                 UserName = Input.Email,
                 Email = Input.Email,
-                // OJO: NO confirmar aquí (RequireConfirmedAccount=true)
                 Nombres = Input.Nombre,
                 Apellidos = $"{Input.Apellido1} {Input.Apellido2}",
                 DisplayName = $"{Input.Nombre} {Input.Apellido1}",
@@ -137,12 +136,6 @@ namespace VenusBeautyStore.PL.Areas.Identity.Pages.Account
                 values: new { area = "Identity", userId = user.Id, code = encodedCode, returnUrl = ReturnUrl },
                 protocol: Request.Scheme)!;
 
-            //var body = $@"
-            //    <p>¡Hola {HtmlEncoder.Default.Encode(Input.Nombre)}!</p>
-            //    <p>Gracias por registrarte en <strong>Venus Beauty</strong>.</p>
-            //    <p>Para activar tu cuenta, haz clic en el siguiente enlace:</p>
-            //    <p><a href=""{HtmlEncoder.Default.Encode(callbackUrl)}"">Confirmar mi correo</a></p>
-            //    <p>Si no fuiste tú, ignora este mensaje.</p>";
             var body = $@"
                     <div style=""font-family:Segoe UI,Arial,sans-serif;color:#111;font-size:15px;line-height:1.6"">
                         <p>¡Hola {HtmlEncoder.Default.Encode(Input.Nombre)}!</p>

@@ -17,21 +17,21 @@ namespace VenusBeautyStore.PL.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        // ✅ Listar servicios
+        //  Listar servicios
         public async Task<IActionResult> Index()
         {
             var servicios = await _servicioService.ObtenerServiciosAsync();
             return View(servicios);
         }
 
-        // ✅ Mostrar formulario de creación
+        //  Mostrar formulario de creación
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        // ✅ Crear servicio con imagen
+        //  Crear servicio con imagen
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Servicio servicio, IFormFile? ImagenArchivo)
@@ -60,7 +60,7 @@ namespace VenusBeautyStore.PL.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ✅ Mostrar formulario de edición
+        //  Mostrar formulario de edición
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -71,7 +71,7 @@ namespace VenusBeautyStore.PL.Controllers
             return View(servicio);
         }
 
-        // ✅ Guardar cambios de edición con imagen
+        //  Guardar cambios de edición con imagen
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Servicio servicio, IFormFile? ImagenArchivo)
@@ -86,10 +86,10 @@ namespace VenusBeautyStore.PL.Controllers
             if (servDb == null)
                 return NotFound();
 
-            // 🔹 Si se subió una nueva imagen → eliminar la anterior y guardar la nueva
+            //  Si se subió una nueva imagen → eliminar la anterior y guardar la nueva
             if (ImagenArchivo != null && ImagenArchivo.Length > 0)
             {
-                // 🗑️ Eliminar la imagen anterior si existe
+                //  Eliminar la imagen anterior si existe
                 if (!string.IsNullOrEmpty(servDb.ImagenUrl))
                 {
                     string oldPath = Path.Combine(_webHostEnvironment.WebRootPath, servDb.ImagenUrl.TrimStart('/'));
@@ -97,7 +97,7 @@ namespace VenusBeautyStore.PL.Controllers
                         System.IO.File.Delete(oldPath);
                 }
 
-                // 📂 Guardar nueva imagen
+                //  Guardar nueva imagen
                 string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads/servicios");
                 Directory.CreateDirectory(uploadsFolder);
 
@@ -119,7 +119,7 @@ namespace VenusBeautyStore.PL.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ✅ Mostrar confirmación de eliminación
+        //  Mostrar confirmación de eliminación
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -138,7 +138,7 @@ namespace VenusBeautyStore.PL.Controllers
             if (servDb == null)
                 return NotFound();
 
-            // 🗑️ Si no se puede eliminar porque está en uso → mostrar error
+            //  Si no se puede eliminar porque está en uso → mostrar error
             var eliminado = await _servicioService.EliminarServicioAsync(id);
             if (!eliminado)
             {
@@ -146,7 +146,7 @@ namespace VenusBeautyStore.PL.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // 🗑️ Si se eliminó → eliminar la imagen asociada si existe
+            //  Si se eliminó → eliminar la imagen asociada si existe
             if (!string.IsNullOrEmpty(servDb.ImagenUrl))
             {
                 string filePath = Path.Combine(_webHostEnvironment.WebRootPath, servDb.ImagenUrl.TrimStart('/'));
@@ -157,29 +157,22 @@ namespace VenusBeautyStore.PL.Controllers
             TempData["Success"] = "El servicio fue eliminado correctamente.";
             return RedirectToAction(nameof(Index));
         }
-        //[AllowAnonymous]
-        //public async Task<IActionResult> Catalogo()
-        //{
-        //    var servicios = await _servicioService.ObtenerServiciosAsync();
-        //    return View(servicios);
-        //}
 
-        // Catálogo público con soporte de anclaje a un servicio concreto
         [AllowAnonymous]
         public async Task<IActionResult> Catalogo(string? q, int? idServicio)
         {
-            var servicios = await _servicioService.ObtenerServiciosAsync(); // usa tu método actual
+            var servicios = await _servicioService.ObtenerServiciosAsync(); 
 
             if (!string.IsNullOrWhiteSpace(q))
                 servicios = servicios.Where(s => s.Nombre.Contains(q, StringComparison.OrdinalIgnoreCase)).ToList();
 
             ViewBag.Q = q;
-            ViewBag.TargetServicioId = idServicio;   // para la vista (scroll y highlight)
+            ViewBag.TargetServicioId = idServicio;  
             return View(servicios);
         }
 
 
-        // ✅ Cambiar estado (botón slide con AJAX)
+        //  Cambiar estado (botón slide con AJAX)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ToggleActivo([FromForm] int id)

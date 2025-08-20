@@ -15,40 +15,16 @@ namespace VenusBeauty.BLL.Services
             _userManager = userManager;
         }
 
-        // ✅ Listar todos los clientes
         public async Task<IEnumerable<Cliente>> ObtenerClientesAsync()
         {
             return await _clienteRepository.GetAllAsync();
         }
 
-        // ✅ Buscar cliente por ID
         public async Task<Cliente?> ObtenerPorIdAsync(int id)
         {
             return await _clienteRepository.GetByIdAsync(id);
         }
 
-        // ✅ Crear cliente + usuario Identity
-        //public async Task<bool> CrearClienteAsync(Cliente cliente, string password)
-        //{
-        //    var user = new ApplicationUser
-        //    {
-        //        UserName = cliente.Correo,
-        //        Email = cliente.Correo,
-        //        EmailConfirmed = true
-        //    };
-
-        //    var result = await _userManager.CreateAsync(user, password);
-        //    if (!result.Succeeded)
-        //        return false;
-
-        //    cliente.UserId = user.Id;
-        //    cliente.Activo = true;
-
-        //    await _clienteRepository.AddAsync(cliente);
-        //    await _clienteRepository.SaveChangesAsync();
-
-        //    return true;
-        //}
         public async Task<bool> CrearClienteAsync(Cliente cliente, string password)
         {
             var user = new ApplicationUser
@@ -76,14 +52,12 @@ namespace VenusBeauty.BLL.Services
         }
 
 
-        // ✅ Editar cliente (incluye actualización de correo en Identity)
         public async Task<bool> EditarClienteAsync(int id, Cliente cliente)
         {
             var clienteDb = await _clienteRepository.GetByIdAsync(id);
             if (clienteDb == null)
                 return false;
 
-            // Si cambió el correo, actualizar también en Identity
             if (clienteDb.Correo != cliente.Correo)
             {
                 var user = await _userManager.FindByIdAsync(clienteDb.UserId);
@@ -111,15 +85,12 @@ namespace VenusBeauty.BLL.Services
             return true;
         }
 
-        // ✅ Eliminar cliente + usuario Identity
         public async Task<bool> EliminarClienteAsync(int id)
         {
-            // 1️⃣ Obtener el cliente
             var cliente = await _clienteRepository.GetByIdAsync(id);
             if (cliente == null)
                 return false;
 
-            // 2️⃣ Eliminar usuario Identity si existe
             if (!string.IsNullOrEmpty(cliente.UserId))
             {
                 var user = await _userManager.FindByIdAsync(cliente.UserId);
@@ -127,12 +98,10 @@ namespace VenusBeauty.BLL.Services
                     await _userManager.DeleteAsync(user);
             }
 
-            // 3️⃣ 🔹 Volver a cargar el cliente después de eliminar el usuario
             var clienteRefrescado = await _clienteRepository.GetByIdAsync(id);
             if (clienteRefrescado == null)
                 return true; // Si ya no existe, salimos sin error
 
-            // 4️⃣ Marcar para eliminación
             await _clienteRepository.DeleteAsync(clienteRefrescado);
             await _clienteRepository.SaveChangesAsync();
 
@@ -140,7 +109,6 @@ namespace VenusBeauty.BLL.Services
         }
 
 
-        // ✅ Cambiar estado (activar/desactivar)
         public async Task<bool> CambiarEstadoAsync(int id)
         {
             var cliente = await _clienteRepository.GetByIdAsync(id);

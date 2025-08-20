@@ -33,7 +33,7 @@ namespace VenusBeautyStore.PL.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "Las contraseñas no coinciden.")]
             public string ConfirmPassword { get; set; } = string.Empty;
 
-            [Required]                          // ← agregado
+            [Required]                          
             public string Code { get; set; } = string.Empty;
         }
 

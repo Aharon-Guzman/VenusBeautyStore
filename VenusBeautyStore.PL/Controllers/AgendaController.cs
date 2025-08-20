@@ -67,7 +67,7 @@ namespace VenusBeautyStore.PL.Controllers
             while (first.DayOfWeek != DayOfWeek.Monday)   // retrocede hasta lunes
                 first = first.AddDays(-1);
 
-            // 2) Si es estilista, fuerza su propio Id
+            //  Si es estilista, fuerza su propio Id
             if (User.IsInRole("Estilista") &&
                 !User.IsInRole("Admin") &&
                 !User.IsInRole("Recepcionista"))
@@ -75,7 +75,7 @@ namespace VenusBeautyStore.PL.Controllers
                 estilistaId = _userManager.GetUserId(User);
             }
 
-            // 3) Generar los 7 días
+            //  Generar los 7 días
             var dias = new List<AgendaDiaViewModel>();
 
             for (int i = 0; i < 7; i++)
@@ -127,10 +127,10 @@ namespace VenusBeautyStore.PL.Controllers
                 estilistaId = _userManager.GetUserId(User);
             }
 
-            // 3️⃣ Obtener cantidad de días en el mes
+            // 3 Obtener cantidad de días en el mes
             int diasEnMes = DateTime.DaysInMonth(mes.Year, mes.Month);
 
-            // 4️⃣ Crear lista de días con citas
+            // 4 Crear lista de días con citas
             var dias = new List<AgendaMesViewModel.DiaCalendarioDto>();
             for (int i = 1; i <= diasEnMes; i++)
             {
@@ -157,7 +157,7 @@ namespace VenusBeautyStore.PL.Controllers
                 });
             }
 
-            // 5️⃣ Armar cuadrícula de 6 semanas x 7 días
+            // 5 Armar cuadrícula de 6 semanas x 7 días
             var semanas = new List<List<AgendaMesViewModel.DiaCalendarioDto>>();
             var semanaActual = new List<AgendaMesViewModel.DiaCalendarioDto>();
 

@@ -13,10 +13,10 @@ namespace VenusBeautyStore.PL.Models
         /* ---------- Campos que se envían al servidor ---------- */
 
         [Required(ErrorMessage = "Seleccione un cliente")]
-        public int IdCliente { get; set; }              // se muestra solo a Recepcionista/Admin
+        public int IdCliente { get; set; }             
 
         [Required(ErrorMessage = "Seleccione un estilista")]
-        public string IdUsuario { get; set; } = null!;  // trabajador (AspNetUsers.UserId)
+        public string IdUsuario { get; set; } = null!;  
 
         [Required(ErrorMessage = "Indique la fecha y hora")]
         [DataType(DataType.DateTime)]
@@ -26,12 +26,12 @@ namespace VenusBeautyStore.PL.Models
         [Required(ErrorMessage = "Seleccione al menos un servicio")]
         public IEnumerable<int> ServiciosSeleccionados { get; set; } = new List<int>();
 
-        // productoId → cantidad. Ej: { 5: 2, 8: 1 }
+       
         public Dictionary<int, int> ProductosSeleccionados { get; set; } = new();
 
         /* ---------- Listas para poblar los controles ---------- */
 
-        public IEnumerable<SelectListItem>? Clientes { get; set; }   // solo para Recepcionista/Admin
+        public IEnumerable<SelectListItem>? Clientes { get; set; }   
         public IEnumerable<SelectListItem>? Trabajadores { get; set; }
         public IEnumerable<SelectListItem>? Servicios { get; set; }
         public IEnumerable<SelectListItem>? Productos { get; set; }

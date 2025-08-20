@@ -12,7 +12,6 @@ namespace VenusBeauty.BLL.Services
         Task<IEnumerable<Trabajador>> ObtenerTrabajadoresAsync();
         Task<Trabajador?> ObtenerPorIdAsync(int id);
 
-        // 🔹 NUEVO: Crear con email y errores detallados
         Task<(bool Succeeded, IEnumerable<string> Errors)> CrearTrabajadorAsync(
             Trabajador trabajador,
             string password,

@@ -56,7 +56,7 @@ namespace VenusBeautyStore.PL.Controllers
                 .OrderByDescending(p => p.IdProducto)
                 .ToList();
 
-            return View(activos); // haremos la vista luego
+            return View(activos); 
         }
 
         public IActionResult Privacy() => View();

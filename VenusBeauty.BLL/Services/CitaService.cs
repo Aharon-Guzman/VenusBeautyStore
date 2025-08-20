@@ -23,8 +23,6 @@ namespace VenusBeauty.BLL.Services
             _productoRepo = productoRepo;
         }
 
-        /* ---------- Lectura ---------- */
-
         public Task<Cita?> ObtenerCitaAsync(int id) => _citaRepo.GetByIdAsync(id);
 
         public Task<IEnumerable<Cita>> ObtenerAgendaAsync(
@@ -175,7 +173,6 @@ namespace VenusBeauty.BLL.Services
             return null;
         }
 
-        // Lista citas del cliente (por userId), por defecto solo "abiertas" (Reservada/Confirmada)
         public async Task<IEnumerable<Cita>> ObtenerCitasDelClienteAsync(string userId, bool soloAbiertas = true)
         {
             var desde = DateTime.Today.AddYears(-1);
@@ -190,7 +187,6 @@ namespace VenusBeauty.BLL.Services
             return mias.OrderByDescending(c => c.FechaHora);
         }
 
-        // Agrega un servicio a una cita existente y recalcula total
         public async Task AgregarServicioAsync(int idCita, int idServicio, string userId)
         {
             var cita = await _citaRepo.GetByIdAsync(idCita) ?? throw new InvalidOperationException("La cita no existe.");
@@ -210,7 +206,6 @@ namespace VenusBeauty.BLL.Services
             await _citaRepo.UpdateAsync(cita);
         }
 
-        // Agrega/actualiza un producto en la reserva de la cita
         public async Task AgregarProductoAsync(int idCita, int idProducto, int cantidad, string userId)
         {
             if (cantidad <= 0) throw new InvalidOperationException("Cantidad inválida.");

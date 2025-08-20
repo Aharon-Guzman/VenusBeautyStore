@@ -11,7 +11,6 @@ using VenusBeautyStore.PL.Models;
 
 namespace VenusBeautyStore.PL.Controllers
 {
-    /*  Deja entrar a todos los roles que crean o ven citas                */
     [Authorize]
     public class CitasController : Controller
     {
@@ -38,7 +37,6 @@ namespace VenusBeautyStore.PL.Controllers
             _userManager = userManager;
         }
 
-        /* ---------- LISTADO ---------- */
         // GET: /Citas
         public async Task<IActionResult> Index()
         {
@@ -73,7 +71,6 @@ namespace VenusBeautyStore.PL.Controllers
             return View(citas);
         }
 
-        /* ---------- FORMULARIO CREATE (GET) ---------- */
         // GET: /Citas/Create
         //public async Task<IActionResult> Create()
         //{
@@ -163,7 +160,6 @@ namespace VenusBeautyStore.PL.Controllers
         }
 
 
-        /* ---------- FORMULARIO CREATE (POST) ---------- */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CitaCreateViewModel vm)
@@ -341,7 +337,6 @@ namespace VenusBeautyStore.PL.Controllers
             }
         }
         // GET: /Citas/Delete/5
-        //[Authorize(Roles = "Admin,Recepcionista")]
         [Authorize(Roles = "Admin,Recepcionista")]
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
@@ -364,7 +359,6 @@ namespace VenusBeautyStore.PL.Controllers
 
             return View(vm);
         }
-        //[Authorize(Roles = "Admin,Recepcionista")]
         [Authorize(Roles = "Admin,Recepcionista")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -420,7 +414,6 @@ namespace VenusBeautyStore.PL.Controllers
             return RedirectToAction(nameof(MiCarrito), new { id = citaId.Value });
         }
 
-        // GET /Citas/ReservarProducto?idProducto=...&cantidad=1&idCita=...
         [Authorize]
         public async Task<IActionResult> ReservarProducto(int idProducto, int cantidad = 1, int? idCita = null)
         {

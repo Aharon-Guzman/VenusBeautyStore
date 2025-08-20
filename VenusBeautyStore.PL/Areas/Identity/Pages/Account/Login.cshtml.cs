@@ -1,99 +1,4 @@
-﻿//using System.ComponentModel.DataAnnotations;
-//using Microsoft.AspNetCore.Identity;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.AspNetCore.Mvc.RazorPages;
-//using Microsoft.Extensions.Logging;
-//using VenusBeauty.DAL.Entities;
-
-//namespace VenusBeautyStore.PL.Areas.Identity.Pages.Account
-//{
-//    public class LoginModel : PageModel
-//    {
-//        private readonly SignInManager<ApplicationUser> _signInManager;
-//        private readonly UserManager<ApplicationUser> _userManager;
-//        private readonly ILogger<LoginModel> _logger;
-
-//        public LoginModel(SignInManager<ApplicationUser> signInManager,
-//                          UserManager<ApplicationUser> userManager,
-//                          ILogger<LoginModel> logger)
-//        {
-//            _signInManager = signInManager;
-//            _userManager = userManager;
-//            _logger = logger;
-//        }
-
-//        [BindProperty]
-//        public InputModel Input { get; set; } = new();
-
-//        public string ReturnUrl { get; set; } = "/";
-
-//        public class InputModel
-//        {
-//            [Required, EmailAddress]
-//            public string Email { get; set; } = string.Empty;
-
-//            [Required, DataType(DataType.Password)]
-//            public string Password { get; set; } = string.Empty;
-
-//            [Display(Name = "Recordarme")]
-//            public bool RememberMe { get; set; }
-//        }
-
-//        public void OnGet(string? returnUrl = null)
-//        {
-//            ReturnUrl = returnUrl ?? Url.Content("~/");
-//        }
-
-//        public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
-//        {
-//            ReturnUrl = returnUrl ?? Url.Content("~/");
-//            if (!ModelState.IsValid) return Page();
-
-//            // Opcional: buscar usuario por email para validar confirmación
-//            var user = await _userManager.FindByEmailAsync(Input.Email);
-//            if (user is null)
-//            {
-//                // Mensaje genérico para no revelar si existe o no
-//                ModelState.AddModelError(string.Empty, "Credenciales inválidas.");
-//                return Page();
-//            }
-
-//            if (!await _userManager.IsEmailConfirmedAsync(user))
-//            {
-//                ModelState.AddModelError(string.Empty, "Debes confirmar tu correo antes de iniciar sesión.");
-//                return Page();
-//            }
-
-//            // IMPORTANTE: lockoutOnFailure = true para que cuente intentos
-//            var result = await _signInManager.PasswordSignInAsync(
-//                user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: true);
-
-//            if (result.Succeeded)
-//            {
-//                _logger.LogInformation("Usuario inició sesión.");
-//                return LocalRedirect(ReturnUrl);
-//            }
-
-//            if (result.IsLockedOut)
-//            {
-//                _logger.LogWarning("Usuario bloqueado por demasiados intentos.");
-
-//                // Redirige directo a Olvidé mi contraseña y prellenamos el email por querystring
-//                return RedirectToPage("./ForgotPassword", new { email = Input.Email });
-//            }
-
-//            if (result.RequiresTwoFactor)
-//            {
-//                // Si usas 2FA
-//                return RedirectToPage("./LoginWith2fa", new { ReturnUrl, Input.RememberMe });
-//            }
-
-//            ModelState.AddModelError(string.Empty, "Intento de inicio de sesión inválido.");
-//            return Page();
-//        }
-//    }
-//}
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -168,7 +73,7 @@ namespace VenusBeautyStore.PL.Areas.Identity.Pages.Account
             {
                 _logger.LogInformation("Usuario inició sesión.");
 
-                // 👉 Redirección por rol: staff al Portal
+                //  Redirección por rol: staff al Portal
                 if (await _userManager.IsInRoleAsync(user, "Admin") ||
                     await _userManager.IsInRoleAsync(user, "Recepcionista") ||
                     await _userManager.IsInRoleAsync(user, "Estilista"))

@@ -57,10 +57,9 @@ namespace VenusBeauty.BLL.Services
             if (servDb == null)
                 return false;
 
-            // 🔹 Verificar si el servicio está asociado a alguna cita
             bool tieneCitas = await _servicioRepository.TieneCitasAsync(id);
             if (tieneCitas)
-                return false; // ❌ No eliminar porque está en uso
+                return false; 
 
             await _servicioRepository.DeleteAsync(servDb);
             await _servicioRepository.SaveChangesAsync();

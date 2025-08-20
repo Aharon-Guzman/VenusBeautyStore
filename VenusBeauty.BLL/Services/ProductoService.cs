@@ -58,10 +58,9 @@ namespace VenusBeauty.BLL.Services
             if (prodDb == null)
                 return false;
 
-            // ✅ Verificar si el producto está en alguna reserva
             bool tieneReservas = await _productoRepository.TieneReservasAsync(id);
             if (tieneReservas)
-                return false; // ❌ No eliminar porque está en uso
+                return false; 
 
             await _productoRepository.DeleteAsync(prodDb);
             await _productoRepository.SaveChangesAsync();

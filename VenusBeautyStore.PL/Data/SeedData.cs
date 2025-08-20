@@ -10,11 +10,11 @@ namespace VenusBeautyStore.PL.Data
     {
         public static async Task Initialize(IServiceProvider serviceProvider)
         {
-            // 1️⃣ Obtenemos RoleManager y UserManager desde los servicios
+            //  Obtenemos RoleManager y UserManager desde los servicios
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-            // 2️⃣ Definimos los roles base
+            //  Definimos los roles base
             string[] roles = { "Admin", "Recepcionista", "Estilista" };
 
             foreach (var role in roles)
@@ -26,7 +26,7 @@ namespace VenusBeautyStore.PL.Data
                 }
             }
 
-            // 3️⃣ Definimos el usuario Admin inicial
+            //  Definimos el usuario Admin inicial
             string adminEmail = "admin@venusbeauty.com";
             string adminPassword = "Admin123$";
 
@@ -38,7 +38,7 @@ namespace VenusBeautyStore.PL.Data
                 {
                     UserName = adminEmail,
                     Email = adminEmail,
-                    EmailConfirmed = true, // ✅ Confirmado desde el inicio
+                    EmailConfirmed = true, // Confirmado desde el inicio
                     Nombres = "Administrador",
                     Apellidos = "Principal",
                     DisplayName = "Administrador",

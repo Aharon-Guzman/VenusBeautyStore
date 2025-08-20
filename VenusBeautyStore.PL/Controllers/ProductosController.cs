@@ -17,21 +17,21 @@ namespace VenusBeautyStore.PL.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        // ✅ Listar productos
+        //  Listar productos
         public async Task<IActionResult> Index()
         {
             var productos = await _productoService.ObtenerProductosAsync();
             return View(productos);
         }
 
-        // ✅ Mostrar formulario de creación
+        //  Mostrar formulario de creación
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        // ✅ Crear producto con imagen
+        // Crear producto con imagen
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Producto producto, IFormFile? ImagenArchivo)
@@ -60,7 +60,7 @@ namespace VenusBeautyStore.PL.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ✅ Mostrar formulario de edición
+        //  Mostrar formulario de edición
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -118,7 +118,7 @@ namespace VenusBeautyStore.PL.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ✅ Mostrar confirmación de eliminación
+        //  Mostrar confirmación de eliminación
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -157,7 +157,7 @@ namespace VenusBeautyStore.PL.Controllers
         }
 
 
-        // ✅ Cambiar estado (botón slide con AJAX)
+        //  Cambiar estado (botón slide con AJAX)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ToggleActivo([FromForm] int id)

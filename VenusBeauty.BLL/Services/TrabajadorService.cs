@@ -25,7 +25,6 @@ namespace VenusBeauty.BLL.Services
             return await _trabajadorRepository.GetByIdAsync(id);
         }
 
-        // ✅ Crear trabajador con correo digitado y errores detallados
         public async Task<(bool Succeeded, IEnumerable<string> Errors)> CrearTrabajadorAsync(
             Trabajador trabajador,
             string password,
@@ -64,12 +63,10 @@ namespace VenusBeauty.BLL.Services
             if (trabajadorDb == null)
                 return false;
 
-            // 🔹 Obtener usuario Identity
             var user = await _userManager.FindByIdAsync(trabajadorDb.UserId);
             if (user == null)
                 return false;
 
-            // ✅ Si el correo cambió → actualizar en Identity
             if (!string.Equals(user.Email, $"{trabajador.Nombre.ToLower()}.{trabajador.Apellido.ToLower()}@venusbeauty.com", StringComparison.OrdinalIgnoreCase))
             {
                 var nuevoCorreo = $"{trabajador.Nombre.ToLower()}.{trabajador.Apellido.ToLower()}@venusbeauty.com";
@@ -81,7 +78,6 @@ namespace VenusBeauty.BLL.Services
                     return false;
             }
 
-            // ✅ Si el rol cambió → actualizar en Identity
             if (trabajadorDb.Rol != trabajador.Rol)
             {
                 var rolesActuales = await _userManager.GetRolesAsync(user);
@@ -91,13 +87,11 @@ namespace VenusBeauty.BLL.Services
                 await _userManager.AddToRoleAsync(user, trabajador.Rol);
             }
 
-            // ✅ Actualizamos nombre/apellido en Identity
             user.Nombres = trabajador.Nombre;
             user.Apellidos = trabajador.Apellido;
             user.DisplayName = $"{trabajador.Nombre} {trabajador.Apellido}";
             await _userManager.UpdateAsync(user);
 
-            // ✅ Actualizamos la tabla Trabajadores
             trabajadorDb.Nombre = trabajador.Nombre;
             trabajadorDb.Apellido = trabajador.Apellido;
             trabajadorDb.Telefono = trabajador.Telefono;
@@ -117,18 +111,15 @@ namespace VenusBeauty.BLL.Services
             if (trabajador == null)
                 return false;
 
-            // 🔹 Verificar si tiene citas asignadas
             var tieneCitas = await _trabajadorRepository.TieneCitasAsync(trabajador.UserId);
             if (tieneCitas)
                 return false;
 
             string? userId = trabajador.UserId;
 
-            // ✅ 1️⃣ Eliminar primero el trabajador de la BD
             await _trabajadorRepository.DeleteAsync(trabajador);
             await _trabajadorRepository.SaveChangesAsync();
 
-            // ✅ 2️⃣ Después eliminar el usuario Identity
             if (!string.IsNullOrEmpty(userId))
             {
                 var user = await _userManager.FindByIdAsync(userId);
@@ -150,7 +141,7 @@ namespace VenusBeauty.BLL.Services
             return result.Succeeded;
         }
         public async Task<(bool Succeeded, IEnumerable<string> Errors)> CrearTrabajadorConErroresAsync(
-    Trabajador trabajador, string password, string rol, string email)
+            Trabajador trabajador, string password, string rol, string email)
         {
             var user = new ApplicationUser
             {
